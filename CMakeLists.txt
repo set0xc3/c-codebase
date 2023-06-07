@@ -12,6 +12,7 @@ set(FRAMEWORK_SOURCES
     ${PROJECT_SOURCE_DIR}/src/forge_audio.c
     ${PROJECT_SOURCE_DIR}/src/forge_log.c
     ${PROJECT_SOURCE_DIR}/src/forge_string.c
+    ${PROJECT_SOURCE_DIR}/src/forge.c
 )
 
 add_library(${PROJECT_NAME}
@@ -21,3 +22,10 @@ add_library(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${PROJECT_SOURCE_DIR}/src
 )
+
+if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+elseif(CMAKE_SYSTEM_NAME MATCHES "Linux")
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    dl m SDL2 SDL2_mixer
+)
+endif()
