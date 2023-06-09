@@ -10,6 +10,7 @@ set(TARGET_ARCHITECTURE "x64")
 
 set(FRAMEWORK_SOURCES
     ${PROJECT_SOURCE_DIR}/src/forge_audio.c
+    ${PROJECT_SOURCE_DIR}/src/forge_gfx.c
     ${PROJECT_SOURCE_DIR}/src/forge_input.c
     ${PROJECT_SOURCE_DIR}/src/forge_log.c
     ${PROJECT_SOURCE_DIR}/src/forge_string.c
