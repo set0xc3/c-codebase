@@ -8,39 +8,27 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <stdlib.h>
+
+typedef enum AudioSupport {
+    AUDIO_SUPPORT_WAVE,
+    AUDIO_SUPPORT_COUNT
+} AudioSupport;
 
 global_variable const char *audio_ext_list[AUDIO_SUPPORT_COUNT] = {
     [AUDIO_SUPPORT_WAVE] = "wav",
 };
 
-typedef struct Wave_Header {
-    unsigned char riff[4];             // RIFF string
-    unsigned int overall_size;         // overall size of file in bytes
-    unsigned char wave[4];             // WAVE string
-    unsigned char fmt_chunk_marker[4]; // fmt string with trailing null char
-    unsigned int length_of_fmt;        // length of the format data
-    unsigned int format_type; // format type. 1-PCM, 3- IEEE float, 6 - 8bit A
-                              // law, 7 - 8bit mu law
-    unsigned int channels;    // no.of channels
-    unsigned int sample_rate; // sampling rate (blocks per second)
-    unsigned int byterate;    // SampleRate * NumChannels * BitsPerSample/8
-    unsigned int block_align; // NumChannels * BitsPerSample/8
-    unsigned int bits_per_sample; // bits per sample, 8- 8bits, 16- 16 bits etc
-    unsigned char data_chunk_header[4]; // DATA string or FLLR string
-    unsigned int data_size; // NumSamples * NumChannels * BitsPerSample/8 - size
-                            // of the next chunk that will be read
-} Wave_Header;
-
-struct Audio_State {
-    bool is_sound_enabled;
+struct AudioState {
+    bool is_played;
     Mix_Music *music;
 };
 
 void audio_init(void) {}
 
-Audio_State *audio_load(const char *file_path) {
-    Audio_State *result = malloc(sizeof(Audio_State));
-    memset(result, 0, sizeof(Audio_State));
+AudioState *audio_load(const char *file_path) {
+    AudioState *result = malloc(sizeof(AudioState));
+    memset(result, 0, sizeof(AudioState));
 
     String8 *file_ext = str8_alloc(str8(file_path));
     str8_ext(file_ext, str8(file_path));
@@ -59,6 +47,11 @@ Audio_State *audio_load(const char *file_path) {
         }
 
         result->music = Mix_LoadMUS(file_path);
+        if (result->music == NULL) {
+            free(result);
+            result = NULL;
+            log_error("Failed Mix_LoadMUS: %s\n", Mix_GetError());
+        }
 
     } else {
         log_warning("Format not supported: %s\n", str8_c(*file_ext));
@@ -69,16 +62,38 @@ Audio_State *audio_load(const char *file_path) {
     return result;
 }
 
-void audio_unload(Audio_State *audio_state) {
+void audio_unload(AudioState *audio_state) {
+    if (audio_state == NULL) {
+        return;
+    }
+
+    Mix_HaltMusic();
     Mix_FreeMusic(audio_state->music);
     free(audio_state);
 }
 
-void audio_play(Audio_State *audio_state) {
-    if (!audio_state->is_sound_enabled) {
-        Mix_PlayMusic(audio_state->music, -1);
-        audio_state->is_sound_enabled = true;
+void audio_play(AudioState *audio_state, bool loop) {
+    if (audio_state == NULL) {
+        return;
+    }
+
+    if (!audio_state->is_played) {
+        if (loop) {
+            Mix_PlayMusic(audio_state->music, -1);
+        } else {
+            Mix_PlayMusic(audio_state->music, 0);
+        }
+        audio_state->is_played = true;
     }
 }
 
-void audio_stop(Audio_State *audio_state) {}
+void audio_stop(AudioState *audio_state) {
+    if (audio_state == NULL) {
+        return;
+    }
+
+    if (audio_state->is_played) {
+        Mix_PauseMusic();
+        audio_state->is_played = false;
+    }
+}

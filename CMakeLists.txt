@@ -10,9 +10,11 @@ set(TARGET_ARCHITECTURE "x64")
 
 set(FRAMEWORK_SOURCES
     ${PROJECT_SOURCE_DIR}/src/forge_audio.c
+    ${PROJECT_SOURCE_DIR}/src/forge_input.c
     ${PROJECT_SOURCE_DIR}/src/forge_log.c
     ${PROJECT_SOURCE_DIR}/src/forge_string.c
     ${PROJECT_SOURCE_DIR}/src/forge.c
+    ${PROJECT_SOURCE_DIR}/src/forge_window.c
 )
 
 add_library(${PROJECT_NAME}

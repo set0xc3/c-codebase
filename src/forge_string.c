@@ -43,14 +43,12 @@ void str8_free(String8 *string) { free(string); }
 void str8_name(String8 *result, const String8 file_path) {
     const char *c = strrchr((const char *)result->str, '/');
     if (c != NULL) {
-        uint64_t pos = (uint64_t)(c - (char *)result->str) + 1;
-        if (pos == 0) {
-            return;
-        } else if (pos > 0) {
-            uint64_t new_size = result->size - pos;
+        uint64_t offset = (uint64_t)(c - (char *)result->str) + 1;
+        if (offset > 0) {
+            uint64_t new_size = result->size - offset;
             str8_realloc(result, new_size);
 
-            memmove(result->str, result->str + pos, result->size);
+            memmove(result->str, result->str + offset, result->size);
         }
     } else {
         log_error("File path does not contain '/'\n");
@@ -60,14 +58,12 @@ void str8_name(String8 *result, const String8 file_path) {
 void str8_ext(String8 *result, const String8 file_path) {
     const char *c = strrchr((const char *)result->str, '.');
     if (c != NULL) {
-        uint64_t pos = (uint64_t)(c - (const char *)result->str) + 1;
-        if (pos == 0) {
-            return;
-        } else if (pos > 0) {
-            uint64_t new_size = result->size - pos;
+        uint64_t offset = (uint64_t)(c - (const char *)result->str) + 1;
+        if (offset > 0) {
+            uint64_t new_size = result->size - offset;
             str8_realloc(result, new_size);
 
-            memmove(result->str, result->str + pos, result->size);
+            memmove(result->str, result->str + offset, result->size);
         }
     } else {
         log_error("File path does not contain '.'\n");
@@ -77,11 +73,9 @@ void str8_ext(String8 *result, const String8 file_path) {
 void str8_dir(String8 *result, const String8 file_path) {
     const char *c = strrchr((const char *)result->str, '/');
     if (c != NULL) {
-        uint64_t pos = (uint64_t)(c - (const char *)result->str);
-        if (pos == 0) {
-            return;
-        } else if (pos > 0) {
-            uint64_t new_size = pos;
+        uint64_t offset = (uint64_t)(c - (const char *)result->str);
+        if (offset > 0) {
+            uint64_t new_size = offset;
             str8_realloc(result, new_size);
         }
     } else {
@@ -97,11 +91,9 @@ void str8_name_no_ext(String8 *result, const String8 file_path) {
 void str8_remove_ext(String8 *result, const String8 file_path) {
     const char *c = strrchr((const char *)result->str, '.');
     if (c != NULL) {
-        uint64_t pos = (uint64_t)(c - (const char *)result->str);
-        if (pos == 0) {
-            return;
-        } else if (pos > 0) {
-            uint64_t new_size = pos;
+        uint64_t offset = (uint64_t)(c - (const char *)result->str);
+        if (offset > 0) {
+            uint64_t new_size = offset;
             str8_realloc(result, new_size);
         }
     } else {

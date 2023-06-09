@@ -3,17 +3,14 @@
 
 #include "forge_platform_types.h"
 
-typedef enum Audio_Support {
-    AUDIO_SUPPORT_WAVE,
-    AUDIO_SUPPORT_COUNT
-} Audio_Support;
+#include <stdbool.h>
 
-typedef struct Audio_State Audio_State;
+typedef struct AudioState AudioState;
 
 EXPORT_LIB void audio_init(void);
-EXPORT_LIB Audio_State *audio_load(const char *file_path);
-EXPORT_LIB void audio_unload(Audio_State *audio_state);
-EXPORT_LIB void audio_play(Audio_State *audio_state);
-EXPORT_LIB void audio_stop(Audio_State *audio_state);
+EXPORT_LIB AudioState *audio_load(const char *file_path);
+EXPORT_LIB void audio_unload(AudioState *audio_state);
+EXPORT_LIB void audio_play(AudioState *audio_state, bool loop);
+EXPORT_LIB void audio_stop(AudioState *audio_state);
 
 #endif // FORGE_AUDIO_H
