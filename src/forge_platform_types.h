@@ -9,8 +9,10 @@
 
 #ifdef PLATFORM_LINUX
 #define PLATFORM_LIB_EXT "so"
+#define PLATFORM_SLASH '/'
 #elif PLATFORM_WINDOWS
 #define PLATFORM_LIB_EXT "dll"
+#define PLATFORM_SLASH '\'
 #endif
 
 #ifdef PLATFORM_LINUX
