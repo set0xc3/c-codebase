@@ -12,7 +12,7 @@
 #define PLATFORM_SLASH '/'
 #elif PLATFORM_WINDOWS
 #define PLATFORM_LIB_EXT "dll"
-#define PLATFORM_SLASH '\'
+#define PLATFORM_SLASH '\\'
 #endif
 
 #ifdef PLATFORM_LINUX
