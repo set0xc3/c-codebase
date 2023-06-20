@@ -1,4 +1,5 @@
 #include "forge_input.h"
+#include "forge_vector2.h"
 
 #include <stdbool.h>
 #include <string.h>
@@ -11,22 +12,19 @@ void input_key_callback(InputState *input, i32 code, i32 state) {
     input->key[code] = state;
 }
 
-void input_mouse_pos_callback(InputState *input, f32 xpos, f32 ypos) {
-    input->xpos = xpos;
-    input->ypos = ypos;
+void input_mouse_position_callback(InputState *input, Vector2 position) {
+    input->position = position;
 }
 
-void input_scroll_callback(InputState *input, f32 xdelta, f32 ydelta) {
-    input->xwheel = xdelta;
-    input->ywheel = ydelta;
+void input_scroll_callback(InputState *input, Vector2 delta) {
+    input->wheel = delta;
 }
 
 void input_update(InputState *input) {
     memcpy(input->last_key, input->key, sizeof(input->key));
     memcpy(input->last_button, input->button, sizeof(input->button));
 
-    input->xwheel = 0;
-    input->ywheel = 0;
+    memset(&input->wheel, 0, sizeof(input->wheel));
 }
 
 b32 input_button_pressed(InputState *input, i32 button) {
@@ -53,12 +51,10 @@ b32 input_key_up(InputState *input, i32 key) {
     return input->last_key[key] && !input->key[key];
 }
 
-void input_mouse_get_pos(InputState *input, i32 *xpos, i32 *ypos) {
-    *xpos = input->xpos;
-    *ypos = input->ypos;
+Vector2 input_mouse_get_position(InputState *input) {
+    return input->position;
 }
 
-void input_mouse_get_wheel(InputState *input, i32 *xdelta, i32 *ydelta) {
-    *xdelta = input->xwheel;
-    *ydelta = input->ywheel;
+Vector2 input_mouse_get_wheel(InputState *input) {
+    return input->wheel;
 }

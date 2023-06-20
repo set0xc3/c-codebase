@@ -3,9 +3,10 @@
 
 #include "forge_base_types.h"
 #include "forge_platform_types.h"
-#include "forge_input.h"
 
 #include <stdint.h>
+
+#include <SDL2/SDL.h>
 
 typedef enum WindowEventKind {
     WINDOW_EVENT_KIND_NULL,
@@ -28,7 +29,9 @@ typedef struct WindowEvent {
 } WindowEvent;
 
 typedef struct WindowState {
-    void *handle;
+    SDL_Window *handle;
+    SDL_Renderer *renderer;
+    SDL_Texture *texture;
     const char *title;
     struct {
         i32 x, y;
@@ -37,7 +40,7 @@ typedef struct WindowState {
 } WindowState;
 
 EXPORT_LIB WindowState *window_open(const char *title, i32 xpos, i32 ypos,
-                                i32 width, i32 height);
+                                    i32 width, i32 height);
 EXPORT_LIB void window_close(WindowState *window);
 EXPORT_LIB void window_poll_event(WindowEvent *return_event);
 

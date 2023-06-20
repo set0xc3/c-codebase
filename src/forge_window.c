@@ -1,7 +1,6 @@
 #include "forge_window.h"
+#include "forge_input.h"
 #include "forge_log.h"
-
-#include <SDL2/SDL.h>
 
 #include <SDL2/SDL_events.h>
 #include <stdbool.h>
@@ -9,7 +8,7 @@
 
 WindowState *window_open(const char *title, i32 xpos, i32 ypos, i32 width,
                          i32 height) {
-    WindowState *result = malloc(sizeof(WindowState));
+    WindowState *result = calloc(sizeof(WindowState), 1);
     result->title = title;
     result->rect.x = xpos;
     result->rect.y = ypos;
@@ -25,6 +24,18 @@ WindowState *window_open(const char *title, i32 xpos, i32 ypos, i32 width,
         return NULL;
     }
 
+    result->renderer = SDL_CreateRenderer(result->handle, -1,
+                                          SDL_RENDERER_ACCELERATED |
+                                              SDL_RENDERER_TARGETTEXTURE);
+    if (!result->renderer) {
+        log_error("[SDL] Failed create renderer\n");
+        return NULL;
+    }
+
+    result->texture = SDL_CreateTexture(
+        result->renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET,
+        result->rect.width, result->rect.height);
+
     return result;
 }
 
@@ -35,11 +46,12 @@ void window_close(WindowState *window) {
 
 void window_poll_event(WindowEvent *return_event) {
     SDL_Event event;
-    while (SDL_PollEvent(&event)) {
+    if (SDL_PollEvent(&event)) {
         if (event.type == SDL_WINDOWEVENT) {
             switch (event.window.event) {
             case SDL_WINDOWEVENT_CLOSE:
-                return_event->handle = (u64 *)SDL_GetWindowFromID(event.window.windowID);
+                return_event->handle =
+                    (u64 *)SDL_GetWindowFromID(event.window.windowID);
                 return_event->kind = WINDOW_EVENT_KIND_WINDOW_CLOSED;
             }
         }

@@ -16,6 +16,10 @@ set(FRAMEWORK_SOURCES
     ${PROJECT_SOURCE_DIR}/src/forge_string.c
     ${PROJECT_SOURCE_DIR}/src/forge.c
     ${PROJECT_SOURCE_DIR}/src/forge_window.c
+    ${PROJECT_SOURCE_DIR}/src/forge_vector2.c
+    ${PROJECT_SOURCE_DIR}/src/forge_vector3.c
+    ${PROJECT_SOURCE_DIR}/src/forge_vector4.c
+    ${PROJECT_SOURCE_DIR}/src/forge_asset.c
 )
 
 add_library(${PROJECT_NAME}
@@ -29,6 +33,6 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 if(CMAKE_SYSTEM_NAME MATCHES "Windows")
 elseif(CMAKE_SYSTEM_NAME MATCHES "Linux")
 target_link_libraries(${PROJECT_NAME} PRIVATE
-    dl m SDL2 SDL2_mixer
+    dl m SDL2 SDL2_mixer SDL2_image
 )
 endif()
