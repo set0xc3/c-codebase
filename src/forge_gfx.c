@@ -1,13 +1,34 @@
 #include "forge_gfx.h"
+#include "forge.h"
+#include "forge_base_types.h"
 #include "forge_log.h"
+#include "forge_memory_arena.h"
+#include "forge_window.h"
 
 #include <stdlib.h>
 
-void gfx_init(GFXState *gfx) {
-    gfx->input = calloc(sizeof(InputState), 1);
+struct GFXState {
+    MemoryArena *arena;
+    InputState *input;
+    WindowState *window;
+};
 
-    gfx->window = window_open("Window", 0, 0, 1280, 720);
+GFXState *gfx_init(void) {
+    MemoryArena *arena = arena_create(Megabytes(64));
+    GFXState *result = arena_push_zero(arena, sizeof(GFXState));
+
+    result->arena = arena;
+    result->input = arena_push_zero(result->arena, sizeof(InputState));
+    result->window = arena_push_zero(result->arena, sizeof(WindowState));
+
+    forge_init();
+
+    result->window = window_open("Window", 0, 0, 800, 600);
+
+    return result;
 }
+
+void gfx_destroy(void) { forge_destroy(); }
 
 bool gfx_update(GFXState *gfx) {
     input_update(gfx->input);
@@ -82,7 +103,8 @@ void gfx_draw_sprite(GFXState *gfx, SDL_Texture *texture, Vector3 position,
     rect.h = size.y;
 
     if (texture == NULL) {
-        gfx_draw_fill_rect(gfx, position, size, v4(255.0f, 0.0f, 255.0f, 255.0f));
+        gfx_draw_fill_rect(gfx, position, size,
+                           v4(255.0f, 0.0f, 255.0f, 255.0f));
         return;
     }
 
@@ -98,3 +120,7 @@ void gfx_draw_line(GFXState *gfx, Vector3 a, Vector3 b, Vector4 color) {
 }
 
 void gfx_end(GFXState *gfx) { SDL_RenderPresent(gfx->window->renderer); }
+
+InputState *gfx_get_input(GFXState *gfx) { return gfx->input; }
+
+WindowState *gfx_get_window(GFXState *gfx) { return gfx->window; }

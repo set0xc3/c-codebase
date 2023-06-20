@@ -20,6 +20,8 @@ set(FRAMEWORK_SOURCES
     ${PROJECT_SOURCE_DIR}/src/forge_vector3.c
     ${PROJECT_SOURCE_DIR}/src/forge_vector4.c
     ${PROJECT_SOURCE_DIR}/src/forge_asset.c
+    ${PROJECT_SOURCE_DIR}/src/forge_math.c
+    ${PROJECT_SOURCE_DIR}/src/forge_memory_arena.c
 )
 
 add_library(${PROJECT_NAME}

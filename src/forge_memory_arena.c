@@ -29,7 +29,7 @@ void arena_release(MemoryArena *arena) {
     free(arena);
 }
 
-u8 *arena_push(MemoryArena *arena, u64 size) {
+void *arena_push(MemoryArena *arena, u64 size) {
     if (arena->pos + size > arena->size) {
         log_error("Handle out-of-memory\n");
         assert(true);
@@ -40,13 +40,13 @@ u8 *arena_push(MemoryArena *arena, u64 size) {
     return pos;
 }
 
-u8 *arena_push_zero(MemoryArena *arena, u64 size) {
+void *arena_push_zero(MemoryArena *arena, u64 size) {
     void *memory = arena_push(arena, size);
     memset(memory, 0, size);
     return memory;
 }
 
-u8 *arena_pop(MemoryArena *arena, u64 size) {
+void *arena_pop(MemoryArena *arena, u64 size) {
     if (arena->pos == 0) {
         log_error("Handle out-of-memory\n");
         assert(true);

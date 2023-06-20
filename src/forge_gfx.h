@@ -25,12 +25,10 @@ typedef struct Sprite {
     Rect rect;
 } Sprite;
 
-typedef struct GFXState {
-    InputState *input;
-    WindowState *window;
-} GFXState;
+typedef struct GFXState GFXState;
 
-EXPORT_LIB void gfx_init(GFXState *gfx);
+EXPORT_LIB GFXState *gfx_init(void);
+EXPORT_LIB void gfx_destroy(void);
 EXPORT_LIB bool gfx_update(GFXState *gfx);
 
 EXPORT_LIB void gfx_begin(GFXState *gfx);
@@ -43,5 +41,8 @@ EXPORT_LIB void gfx_draw_sprite(GFXState *gfx, SDL_Texture *texture,
 EXPORT_LIB void gfx_draw_line(GFXState *gfx, Vector3 a, Vector3 b,
                               Vector4 color);
 EXPORT_LIB void gfx_end(GFXState *gfx);
+
+EXPORT_LIB InputState *gfx_get_input(GFXState *gfx);
+EXPORT_LIB WindowState *gfx_get_window(GFXState *gfx);
 
 #endif // FORGE_GFX_H

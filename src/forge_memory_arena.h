@@ -9,9 +9,9 @@ typedef struct MemoryArenaTemp MemoryArenaTemp;
 
 EXPORT_LIB MemoryArena *arena_create(u64 size);
 EXPORT_LIB void arena_release(MemoryArena *arena);
-EXPORT_LIB u8 *arena_push(MemoryArena *arena, u64 size);
-EXPORT_LIB u8 *arena_push_zero(MemoryArena *arena, u64 size);
-EXPORT_LIB u8 *arena_pop(MemoryArena *arena, u64 size);
+EXPORT_LIB void *arena_push(MemoryArena *arena, u64 size);
+EXPORT_LIB void *arena_push_zero(MemoryArena *arena, u64 size);
+EXPORT_LIB void *arena_pop(MemoryArena *arena, u64 size);
 EXPORT_LIB void arena_clear(MemoryArena *arena);
 EXPORT_LIB u64 arena_get_pos(MemoryArena *arena);
 
