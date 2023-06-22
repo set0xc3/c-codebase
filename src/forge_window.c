@@ -2,7 +2,8 @@
 #include "forge_input.h"
 #include "forge_log.h"
 
-#include <SDL2/SDL_events.h>
+#include <SDL2/SDL.h>
+
 #include <stdbool.h>
 #include <stdlib.h>
 
@@ -59,6 +60,13 @@ void window_poll_event(WindowEvent *return_event) {
         switch (event.type) {
         case SDL_QUIT:
             return_event->kind = WINDOW_EVENT_KIND_QUIT;
+            break;
+        case SDL_WINDOWEVENT:
+            if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                return_event->kind = WINDOW_EVENT_KIND_WINDOW_RESIZED;
+                return_event->width = event.window.data1;
+                return_event->height = event.window.data2;
+            }
             break;
         case SDL_MOUSEMOTION:
             return_event->kind = WINDOW_EVENT_KIND_MOUSE_MOTION;

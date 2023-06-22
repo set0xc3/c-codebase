@@ -12,6 +12,7 @@ typedef enum WindowEventKind {
     WINDOW_EVENT_KIND_NULL,
     WINDOW_EVENT_KIND_QUIT,
     WINDOW_EVENT_KIND_WINDOW_CLOSED,
+    WINDOW_EVENT_KIND_WINDOW_RESIZED,
     WINDOW_EVENT_KIND_MOUSE_BUTTON,
     WINDOW_EVENT_KIND_MOUSE_MOTION,
     WINDOW_EVENT_KIND_SCROLL_MOTION,
@@ -26,6 +27,7 @@ typedef struct WindowEvent {
     i32 state;
     i32 xwheel, ywheel;
     i32 xpos, ypos;
+    i32 width, height;
 } WindowEvent;
 
 typedef struct WindowState {

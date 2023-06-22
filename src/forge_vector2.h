@@ -28,7 +28,9 @@ typedef union Vector2 {
 
 EXPORT_LIB Vector2 v2(f32 x, f32 y);
 EXPORT_LIB Vector2 add_v2(Vector2 left, Vector2 right);
+EXPORT_LIB Vector2 add_v2f(Vector2 left, f32 right);
 EXPORT_LIB Vector2 sub_v2(Vector2 left, Vector2 right);
+EXPORT_LIB Vector2 sub_v2f(Vector2 left, f32 right);
 EXPORT_LIB Vector2 mul_v2(Vector2 left, Vector2 right);
 EXPORT_LIB Vector2 mul_v2f(Vector2 left, f32 right);
 EXPORT_LIB Vector2 div_v2(Vector2 left, Vector2 right);

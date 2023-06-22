@@ -38,22 +38,23 @@ typedef struct InputState {
     Vector2 wheel;
 } InputState;
 
-EXPORT_LIB void input_button_callback(InputState *input, i32 code, i32 state);
-EXPORT_LIB void input_key_callback(InputState *input, i32 code, i32 state);
-EXPORT_LIB void input_mouse_position_callback(InputState *input, Vector2 position);
-EXPORT_LIB void input_scroll_callback(InputState *input, Vector2 delta);
+EXPORT_LIB void input_init(InputState *input);
+EXPORT_LIB void input_button_callback(i32 code, i32 state);
+EXPORT_LIB void input_key_callback(i32 code, i32 state);
+EXPORT_LIB void input_mouse_position_callback(Vector2 position);
+EXPORT_LIB void input_scroll_callback(Vector2 delta);
 
-EXPORT_LIB void input_update(InputState *input);
+EXPORT_LIB void input_update(void);
 
-EXPORT_LIB b32 input_button_pressed(InputState *input, i32 button);
-EXPORT_LIB b32 input_button_down(InputState *input, i32 button);
-EXPORT_LIB b32 input_button_up(InputState *input, i32 button);
+EXPORT_LIB b32 input_button_pressed(i32 button);
+EXPORT_LIB b32 input_button_down(i32 button);
+EXPORT_LIB b32 input_button_up(i32 button);
 
-EXPORT_LIB b32 input_key_pressed(InputState *input, i32 key);
-EXPORT_LIB b32 input_key_down(InputState *input, i32 key);
-EXPORT_LIB b32 input_key_up(InputState *input, i32 key);
+EXPORT_LIB b32 input_key_pressed(i32 key);
+EXPORT_LIB b32 input_key_down(i32 key);
+EXPORT_LIB b32 input_key_up(i32 key);
 
-EXPORT_LIB Vector2 input_mouse_get_position(InputState *input);
-EXPORT_LIB Vector2 input_mouse_get_wheel(InputState *input);
+EXPORT_LIB Vector2 input_mouse_get_position(void);
+EXPORT_LIB Vector2 input_mouse_get_wheel(void);
 
 #endif // FORGE_INPUT_H

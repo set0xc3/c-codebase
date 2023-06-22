@@ -14,10 +14,24 @@ Vector2 add_v2(Vector2 left, Vector2 right) {
     return v;
 }
 
+Vector2 add_v2f(Vector2 left, f32 right) {
+    Vector2 v;
+    v.x = left.x + right;
+    v.y = left.y + right;
+    return v;
+}
+
 Vector2 sub_v2(Vector2 left, Vector2 right) {
     Vector2 v;
     v.x = left.x - right.x;
     v.y = left.y - right.y;
+    return v;
+}
+
+Vector2 sub_v2f(Vector2 left, f32 right) {
+    Vector2 v;
+    v.x = left.x - right;
+    v.y = left.y - right;
     return v;
 }
 

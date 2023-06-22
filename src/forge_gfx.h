@@ -27,22 +27,26 @@ typedef struct Sprite {
 
 typedef struct GFXState GFXState;
 
-EXPORT_LIB GFXState *gfx_init(void);
+EXPORT_LIB void gfx_init(void);
 EXPORT_LIB void gfx_destroy(void);
-EXPORT_LIB bool gfx_update(GFXState *gfx);
+EXPORT_LIB bool gfx_update(void);
 
-EXPORT_LIB void gfx_begin(GFXState *gfx);
-EXPORT_LIB void gfx_draw_rect(GFXState *gfx, Vector3 position, Vector3 size,
-                              Vector4 color);
-EXPORT_LIB void gfx_draw_fill_rect(GFXState *gfx, Vector3 position,
-                                   Vector2 size, Vector4 color);
-EXPORT_LIB void gfx_draw_sprite(GFXState *gfx, SDL_Texture *texture,
-                                Vector3 position, Vector2 size, Vector4 color);
-EXPORT_LIB void gfx_draw_line(GFXState *gfx, Vector3 a, Vector3 b,
-                              Vector4 color);
-EXPORT_LIB void gfx_end(GFXState *gfx);
+EXPORT_LIB void gfx_window_set_position(Vector2 position);
+EXPORT_LIB Vector2 gfx_window_get_position(void);
 
-EXPORT_LIB InputState *gfx_get_input(GFXState *gfx);
-EXPORT_LIB WindowState *gfx_get_window(GFXState *gfx);
+EXPORT_LIB void gfx_window_set_size(Vector2 size);
+EXPORT_LIB Vector2 gfx_window_get_size(void);
+
+EXPORT_LIB void gfx_window_set_title(const char *title);
+EXPORT_LIB const char *gfx_window_get_title(void);
+
+EXPORT_LIB void gfx_begin(void);
+EXPORT_LIB void gfx_draw_rect(Vector3 position, Vector3 size, Vector4 color);
+EXPORT_LIB void gfx_draw_fill_rect(Vector3 position, Vector2 size,
+                                   Vector4 color);
+EXPORT_LIB void gfx_draw_sprite(SDL_Texture *texture, Vector3 position,
+                                Vector2 size, Vector4 color);
+EXPORT_LIB void gfx_draw_line(Vector3 a, Vector3 b, Vector4 color);
+EXPORT_LIB void gfx_end(void);
 
 #endif // FORGE_GFX_H
