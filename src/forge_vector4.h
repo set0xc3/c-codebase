@@ -53,6 +53,12 @@ typedef union Vector4 {
         f32 left, right, top, botton;
     };
 
+    struct {
+        f32 _ignored6;
+        f32 _ignored7;
+        f32 width, height;
+    };
+
     f32 elements[4];
 } Vector4;
 

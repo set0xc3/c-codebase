@@ -8,9 +8,7 @@
 #include "forge_vector3.h"
 #include "forge_vector4.h"
 #include "forge_window.h"
-
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_render.h>
+#include "forge_asset.h"
 
 typedef struct Vertex {
     Vector3 position;
@@ -18,18 +16,17 @@ typedef struct Vertex {
     Vector2 uv;
 } Vertex;
 
-typedef Vector3 Rect;
-
-typedef struct Sprite {
-    SDL_Texture *texture;
-    Rect rect;
-} Sprite;
+typedef Vector4 Rect;
 
 typedef struct GFXState GFXState;
 
 EXPORT_LIB void gfx_init(void);
 EXPORT_LIB void gfx_destroy(void);
-EXPORT_LIB bool gfx_update(void);
+EXPORT_LIB b32 gfx_update(void);
+
+EXPORT_LIB b32 gfx_is_quit(void);
+
+EXPORT_LIB WindowState *gfx_get_window(void);
 
 EXPORT_LIB void gfx_window_set_position(Vector2 position);
 EXPORT_LIB Vector2 gfx_window_get_position(void);
@@ -44,7 +41,7 @@ EXPORT_LIB void gfx_begin(void);
 EXPORT_LIB void gfx_draw_rect(Vector3 position, Vector3 size, Vector4 color);
 EXPORT_LIB void gfx_draw_fill_rect(Vector3 position, Vector2 size,
                                    Vector4 color);
-EXPORT_LIB void gfx_draw_sprite(SDL_Texture *texture, Vector3 position,
+EXPORT_LIB void gfx_draw_image(Image *image, Vector3 position,
                                 Vector2 size, Vector4 color);
 EXPORT_LIB void gfx_draw_line(Vector3 a, Vector3 b, Vector4 color);
 EXPORT_LIB void gfx_end(void);

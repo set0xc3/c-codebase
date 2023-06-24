@@ -1,14 +1,18 @@
 #include "forge_gfx.h"
 #include "forge.h"
+#include "forge_asset.h"
 #include "forge_base_types.h"
 #include "forge_input.h"
 #include "forge_log.h"
 #include "forge_memory_arena.h"
 #include "forge_window.h"
 
+#include "forge_asset_internal.c"
+
 #include <stdlib.h>
 
 struct GFXState {
+    b32 is_quit;
     MemoryArena *arena;
     InputState *input;
     WindowState *window;
@@ -25,6 +29,7 @@ void gfx_init(void) {
     g_gfx->window = arena_push_zero(g_gfx->arena, sizeof(WindowState));
 
     forge_init();
+    asset_init();
     input_init(g_gfx->input);
 
     g_gfx->window = window_open("Window", 0, 0, 1280, 720);
@@ -32,17 +37,19 @@ void gfx_init(void) {
 
 void gfx_destroy(void) { forge_destroy(); }
 
-bool gfx_update(void) {
+b32 gfx_update(void) {
     input_update();
 
     WindowEvent event = {0};
     window_poll_event(&event);
 
     switch (event.kind) {
+    case WINDOW_EVENT_KIND_NULL:
+        return false;
     case WINDOW_EVENT_KIND_QUIT:
         window_close(g_gfx->window);
-        log_info("Shutdown...\n");
-        return false;
+        g_gfx->is_quit = true;
+        break;
     case WINDOW_EVENT_KIND_WINDOW_CLOSED: {
     } break;
     case WINDOW_EVENT_KIND_MOUSE_BUTTON:
@@ -67,6 +74,10 @@ bool gfx_update(void) {
 
     return true;
 }
+
+b32 gfx_is_quit(void) { return g_gfx->is_quit; }
+
+WindowState *gfx_get_window(void) { return g_gfx->window; }
 
 void gfx_window_set_position(Vector2 position) {
     g_gfx->window->rect.x = (i32)position.x;
@@ -102,7 +113,7 @@ void gfx_window_set_title(const char *title) {
 const char *gfx_window_get_title(void) { return g_gfx->window->title; }
 
 void gfx_begin(void) {
-    SDL_SetRenderDrawColor(g_gfx->window->renderer, 0xFF, 0x0, 0xFF, 0xFF);
+    SDL_SetRenderDrawColor(g_gfx->window->renderer, 0x0, 0x0, 0x0, 0x0);
     SDL_RenderClear(g_gfx->window->renderer);
 }
 
@@ -128,8 +139,8 @@ void gfx_draw_fill_rect(Vector3 position, Vector2 size, Vector4 color) {
     SDL_RenderFillRect(g_gfx->window->renderer, &rect);
 }
 
-void gfx_draw_sprite(SDL_Texture *texture, Vector3 position, Vector2 size,
-                     Vector4 color) {
+void gfx_draw_image(Image *image, Vector3 position, Vector2 size,
+                    Vector4 color) {
 
     SDL_Rect rect;
     rect.x = position.x;
@@ -137,13 +148,13 @@ void gfx_draw_sprite(SDL_Texture *texture, Vector3 position, Vector2 size,
     rect.w = size.x;
     rect.h = size.y;
 
-    if (texture == NULL) {
+    if (image->texture == NULL) {
         gfx_draw_fill_rect(position, size, v4(255.0f, 0.0f, 255.0f, 255.0f));
         return;
     }
 
-    SDL_SetRenderTarget(g_gfx->window->renderer, texture);
-    SDL_RenderCopy(g_gfx->window->renderer, texture, NULL, &rect);
+    SDL_SetRenderTarget(g_gfx->window->renderer, image->texture);
+    SDL_RenderCopy(g_gfx->window->renderer, image->texture, NULL, &rect);
     SDL_SetRenderTarget(g_gfx->window->renderer, NULL);
 }
 
