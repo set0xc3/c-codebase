@@ -1,5 +1,7 @@
 #include "vector.h"
 
+#include <math.h>
+
 Vector2
 v2(f32 x, f32 y)
 {

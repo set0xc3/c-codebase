@@ -1,7 +1,7 @@
 #ifndef FORGE_PLATFORM_H
 #define FORGE_PLATFORM_H
 
-// ---- Platform Types ----
+// Platform Types
 
 #ifdef __linux__
 #define PLATFORM_LINUX

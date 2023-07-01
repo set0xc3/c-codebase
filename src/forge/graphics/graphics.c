@@ -1,12 +1,11 @@
 #include "graphics.h"
 #include "window.h"
 
+#include "forge/asset/internal.c"
 #include "forge/base/base.h"
 #include "forge/forge.h"
 #include "forge/input/input.h"
 #include "forge/memory/memory.h"
-
-#include "forge/asset/internal.c"
 
 #include <stdlib.h>
 

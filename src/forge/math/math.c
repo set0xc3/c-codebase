@@ -1,5 +1,7 @@
 #include "math.h"
 
+#include <math.h>
+
 f32
 m_degreesf(f32 radian)
 {

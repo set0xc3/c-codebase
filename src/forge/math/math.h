@@ -4,8 +4,6 @@
 #include "forge/base/base.h"
 #include "forge/platform/platform.h"
 
-#include <math.h>
-
 // Angle
 
 EXPORT_LIB f32 m_radiansf(f32 degree);

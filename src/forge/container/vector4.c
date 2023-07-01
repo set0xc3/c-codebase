@@ -1,5 +1,7 @@
 #include "vector.h"
 
+#include <math.h>
+
 Vector4
 v4(f32 x, f32 y, f32 z, f32 w)
 {
