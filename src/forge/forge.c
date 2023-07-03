@@ -1,5 +1,4 @@
-#include "forge.h"
-
+#include "forge/forge.h"
 #include "forge/logger/logger.h"
 
 #include <SDL2/SDL.h>

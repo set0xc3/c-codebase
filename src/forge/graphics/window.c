@@ -1,7 +1,8 @@
-#include "window.h"
-
+#include "forge/graphics/window.h"
 #include "forge/input/input.h"
 #include "forge/logger/logger.h"
+
+#include "forge/graphics/window_internal.c"
 
 WindowState *
 window_open(const char *title, i32 xpos, i32 ypos, i32 width, i32 height)

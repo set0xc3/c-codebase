@@ -1,7 +1,9 @@
-#include "input.h"
+#include "forge/input/input.h"
 
 #include <stdbool.h>
 #include <string.h>
+
+#include "forge/input/input_internal.c"
 
 global_variable InputState *g_input;
 

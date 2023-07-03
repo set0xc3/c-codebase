@@ -1,5 +1,4 @@
-#include "asset.h"
-
+#include "forge/asset/asset.h"
 #include "forge/graphics/graphics.h"
 #include "forge/graphics/window.h"
 #include "forge/logger/logger.h"
@@ -7,7 +6,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-#include "internal.c"
+#include "forge/asset/asset_internal.c"
+#include "forge/graphics/window_internal.c"
 
 void
 asset_init(void)

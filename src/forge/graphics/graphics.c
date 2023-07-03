@@ -1,13 +1,16 @@
-#include "graphics.h"
-#include "window.h"
+#include "forge/graphics/graphics.h"
+#include "forge/graphics/window.h"
 
-#include "forge/asset/internal.c"
 #include "forge/base/base.h"
 #include "forge/forge.h"
 #include "forge/input/input.h"
 #include "forge/memory/memory.h"
 
 #include <stdlib.h>
+
+#include "forge/asset/asset_internal.c"
+#include "forge/graphics/window_internal.c"
+#include "forge/input/input_internal.c"
 
 struct GFXState
 {

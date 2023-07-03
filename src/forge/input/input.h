@@ -29,17 +29,7 @@ typedef enum KeyCode
     KEY_CODE_COUNT,
 } KeyCode;
 
-typedef struct InputState
-{
-    b32 last_key[KEY_CODE_COUNT];
-    b32 key[KEY_CODE_COUNT];
-
-    b32 last_button[MOUSE_BUTTON_COUNT];
-    b32 button[MOUSE_BUTTON_COUNT];
-
-    V2F position;
-    V2F wheel;
-} InputState;
+typedef struct InputState InputState;
 
 EXPORT_LIB void input_init(InputState *input);
 EXPORT_LIB void input_button_callback(i32 code, i32 state);

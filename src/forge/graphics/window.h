@@ -19,29 +19,8 @@ typedef enum WindowEventKind
     WINDOW_EVENT_KIND_COUNT,
 } WindowEventKind;
 
-typedef struct WindowEvent
-{
-    u64 *handle;
-    i32  kind;
-    i32  code;
-    i32  state;
-    i32  xwheel, ywheel;
-    i32  xpos, ypos;
-    i32  width, height;
-} WindowEvent;
-
-typedef struct WindowState
-{
-    SDL_Window   *handle;
-    SDL_Renderer *renderer;
-    SDL_Texture  *texture;
-    const char   *title;
-    struct
-    {
-        i32 x, y;
-        i32 width, height;
-    } rect;
-} WindowState;
+typedef struct WindowEvent WindowEvent;
+typedef struct WindowState WindowState;
 
 EXPORT_LIB WindowState *window_open(const char *title, i32 xpos, i32 ypos,
                                     i32 width, i32 height);
