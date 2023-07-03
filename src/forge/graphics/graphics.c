@@ -48,7 +48,7 @@ gfx_update(void)
     input_update();
 
     WindowEvent event = { 0 };
-    window_poll_event(&event);
+    window_event_handler(&event);
 
     switch (event.kind)
     {
@@ -69,10 +69,10 @@ gfx_update(void)
         input_key_callback(event.code, event.state);
         break;
     case WINDOW_EVENT_KIND_MOUSE_MOTION:
-        input_mouse_position_callback(v2((f32)event.xpos, (f32)event.ypos));
+        input_mouse_position_callback(v2f((f32)event.xpos, (f32)event.ypos));
         break;
     case WINDOW_EVENT_KIND_SCROLL_MOTION:
-        input_scroll_callback(v2((f32)event.xwheel, (f32)event.ywheel));
+        input_scroll_callback(v2f((f32)event.xwheel, (f32)event.ywheel));
         break;
     case WINDOW_EVENT_KIND_WINDOW_RESIZED:
         g_gfx->window->rect.width = event.width;
@@ -86,60 +86,60 @@ gfx_update(void)
 }
 
 b32
-gfx_is_quit(void)
+gfx_quit_is(void)
 {
     return g_gfx->is_quit;
 }
 
 WindowState *
-gfx_get_window(void)
+gfx_window_get(void)
 {
     return g_gfx->window;
 }
 
 void
-gfx_window_set_position(Vector2 position)
+gfx_window_position_set(V2F position)
 {
     g_gfx->window->rect.x = (i32)position.x;
     g_gfx->window->rect.y = (i32)position.y;
     SDL_SetWindowPosition(g_gfx->window->handle, position.x, position.y);
 }
 
-Vector2
-gfx_window_get_position(void)
+V2F
+gfx_window_position_get(void)
 {
-    Vector2 result;
+    V2F result;
     result.x = (f32)g_gfx->window->rect.x;
     result.y = (f32)g_gfx->window->rect.y;
     return result;
 }
 
 void
-gfx_window_set_size(Vector2 size)
+gfx_window_size_set(V2F size)
 {
     g_gfx->window->rect.width = (i32)size.x;
     g_gfx->window->rect.height = (i32)size.y;
     SDL_SetWindowSize(g_gfx->window->handle, size.x, size.y);
 }
 
-Vector2
-gfx_window_get_size(void)
+V2F
+gfx_window_size_get(void)
 {
-    Vector2 result;
+    V2F result;
     result.x = (f32)g_gfx->window->rect.width;
     result.y = (f32)g_gfx->window->rect.height;
     return result;
 }
 
 void
-gfx_window_set_title(const char *title)
+gfx_window_title_set(const char *title)
 {
     g_gfx->window->title = title;
     SDL_SetWindowTitle(g_gfx->window->handle, title);
 }
 
 const char *
-gfx_window_get_title(void)
+gfx_window_title_get(void)
 {
     return g_gfx->window->title;
 }
@@ -158,7 +158,7 @@ gfx_end(void)
 }
 
 void
-gfx_draw_rect(Vector3 position, Vector3 size, Vector4 color)
+gfx_draw_rect(V3F position, V3F size, V4F color)
 {
     SDL_Rect rect;
     rect.x = position.x;
@@ -171,7 +171,7 @@ gfx_draw_rect(Vector3 position, Vector3 size, Vector4 color)
 }
 
 void
-gfx_draw_fill_rect(Vector3 position, Vector2 size, Vector4 color)
+gfx_draw_rect_fill(V3F position, V2F size, V4F color)
 {
     SDL_Rect rect;
     rect.x = position.x;
@@ -184,7 +184,7 @@ gfx_draw_fill_rect(Vector3 position, Vector2 size, Vector4 color)
 }
 
 void
-gfx_draw_image(Image *image, Vector3 position, Vector2 size, Vector4 color)
+gfx_draw_image(Image *image, V3F position, V2F size, V4F color)
 {
 
     SDL_Rect rect;
@@ -195,7 +195,7 @@ gfx_draw_image(Image *image, Vector3 position, Vector2 size, Vector4 color)
 
     if (image->texture == NULL)
     {
-        gfx_draw_fill_rect(position, size, v4(255.0f, 0.0f, 255.0f, 255.0f));
+        gfx_draw_rect_fill(position, size, v4f(255.0f, 0.0f, 255.0f, 255.0f));
         return;
     }
 
@@ -205,7 +205,7 @@ gfx_draw_image(Image *image, Vector3 position, Vector2 size, Vector4 color)
 }
 
 void
-gfx_draw_line(Vector3 a, Vector3 b, Vector4 color)
+gfx_draw_line(V3F a, V3F b, V4F color)
 {
     SDL_SetRenderDrawColor(g_gfx->window->renderer, color.r, color.g, color.b,
                            color.a);

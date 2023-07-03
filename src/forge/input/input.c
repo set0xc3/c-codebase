@@ -24,13 +24,13 @@ input_key_callback(i32 code, i32 state)
 }
 
 void
-input_mouse_position_callback(Vector2 position)
+input_mouse_position_callback(V2F position)
 {
     g_input->position = position;
 }
 
 void
-input_scroll_callback(Vector2 delta)
+input_scroll_callback(V2F delta)
 {
     g_input->wheel = delta;
 }
@@ -80,14 +80,14 @@ input_key_up(i32 key)
     return g_input->last_key[key] && !g_input->key[key];
 }
 
-Vector2
-input_mouse_get_position(void)
+V2F
+input_mouse_position_get(void)
 {
     return g_input->position;
 }
 
-Vector2
-input_mouse_get_wheel(void)
+V2F
+input_mouse_wheel_get(void)
 {
     return g_input->wheel;
 }

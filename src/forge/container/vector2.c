@@ -2,119 +2,119 @@
 
 #include <math.h>
 
-Vector2
-v2(f32 x, f32 y)
+V2F
+v2f(f32 x, f32 y)
 {
-    Vector2 v;
+    V2F v;
     v.x = x;
     v.y = y;
     return v;
 }
 
-Vector2
-add_v2(Vector2 left, Vector2 right)
+V2F
+v2f_add(V2F left, V2F right)
 {
-    Vector2 v;
+    V2F v;
     v.x = left.x + right.x;
     v.y = left.y + right.y;
     return v;
 }
 
-Vector2
-add_v2f(Vector2 left, f32 right)
+V2F
+v2f_addf(V2F left, f32 right)
 {
-    Vector2 v;
+    V2F v;
     v.x = left.x + right;
     v.y = left.y + right;
     return v;
 }
 
-Vector2
-sub_v2(Vector2 left, Vector2 right)
+V2F
+v2f_sub(V2F left, V2F right)
 {
-    Vector2 v;
+    V2F v;
     v.x = left.x - right.x;
     v.y = left.y - right.y;
     return v;
 }
 
-Vector2
-sub_v2f(Vector2 left, f32 right)
+V2F
+v2f_subf(V2F left, f32 right)
 {
-    Vector2 v;
+    V2F v;
     v.x = left.x - right;
     v.y = left.y - right;
     return v;
 }
 
-Vector2
-mul_v2(Vector2 left, Vector2 right)
+V2F
+v2f_mul(V2F left, V2F right)
 {
-    Vector2 v;
+    V2F v;
     v.x = left.x * right.x;
     v.y = left.y * right.y;
     return v;
 }
 
-Vector2
-mul_v2f(Vector2 left, f32 right)
+V2F
+v2f_mulf(V2F left, f32 right)
 {
-    Vector2 v;
+    V2F v;
     v.x = left.x * right;
     v.y = left.y * right;
     return v;
 }
 
-Vector2
-div_v2(Vector2 left, Vector2 right)
+V2F
+v2f_div(V2F left, V2F right)
 {
-    Vector2 v;
+    V2F v;
     v.x = left.x / right.x;
     v.y = left.y / right.y;
     return v;
 }
 
-Vector2
-div_v2f(Vector2 left, f32 right)
+V2F
+v2f_divf(V2F left, f32 right)
 {
-    Vector2 v;
+    V2F v;
     v.x = left.x / right;
     v.y = left.y / right;
     return v;
 }
 
 f32
-dot_v2(Vector2 left, Vector2 right)
+v2f_dot(V2F left, V2F right)
 {
     return (left.x * right.x) + (left.y * right.y);
 }
 
 b32
-is_equal_v2(Vector2 left, Vector2 right)
+v2f_eq(V2F left, V2F right)
 {
     return left.x == right.x && left.y == right.y;
 }
 
-Vector2
-norm_v2(Vector2 v)
+V2F
+v2f_norm(V2F v)
 {
-    return mul_v2f(v, 1.0f / sqrtf(dot_v2(v, v)));
+    return v2f_mulf(v, 1.0f / sqrtf(v2f_dot(v, v)));
 }
 
 f32
-len_sqrt_v2(Vector2 v)
+v2f_sqrt_len(V2F v)
 {
-    return dot_v2(v, v);
+    return v2f_dot(v, v);
 }
 
 f32
-len_v2(Vector2 v)
+v2f_len(V2F v)
 {
-    return sqrtf(len_sqrt_v2(v));
+    return sqrtf(v2f_sqrt_len(v));
 }
 
-Vector2
-lerp_v2(Vector2 left, Vector2 right, f32 time)
+V2F
+v2f_lerp(V2F left, V2F right, f32 time)
 {
-    return add_v2(mul_v2f(left, 1.0f - time), mul_v2f(right, time));
+    return v2f_add(v2f_mulf(left, 1.0f - time), v2f_mulf(right, time));
 }

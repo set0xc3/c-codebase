@@ -25,3 +25,15 @@ forge_sleep(u32 ms)
 {
     SDL_Delay(ms);
 }
+
+u64
+forge_perf_counter(void)
+{
+    return SDL_GetPerformanceCounter();
+}
+
+u64
+forge_perf_frequency(void)
+{
+    return SDL_GetPerformanceFrequency();
+}

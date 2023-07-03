@@ -47,10 +47,10 @@ window_close(WindowState *window)
 }
 
 void
-window_poll_event(WindowEvent *return_event)
+window_event_handler(WindowEvent *return_event)
 {
     SDL_Event event;
-    if (SDL_PollEvent(&event))
+    while (SDL_PollEvent(&event))
     {
         if (event.type == SDL_WINDOWEVENT)
         {

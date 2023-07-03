@@ -30,7 +30,7 @@ arena_create(u64 size)
 }
 
 void
-arena_release(MemoryArena *arena)
+arena_destroy(MemoryArena *arena)
 {
     free(arena->data);
     free(arena);
@@ -79,7 +79,7 @@ arena_clear(MemoryArena *arena)
 }
 
 u64
-arena_get_pos(MemoryArena *arena)
+arena_offset_get(MemoryArena *arena)
 {
     return arena->pos;
 }
@@ -100,7 +100,7 @@ arena_temp_end(MemoryArenaTemp temp)
 }
 
 MemoryArenaTemp
-arena_get_scratch(MemoryArena *arena)
+arena_temp_scratch_get(MemoryArena *arena)
 {
     MemoryArenaTemp temp = { 0 };
     temp.arena = arena;

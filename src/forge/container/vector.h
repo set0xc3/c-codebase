@@ -4,9 +4,9 @@
 #include "forge/base/base.h"
 #include "forge/platform/platform.h"
 
-// Vector2
+// V2F
 
-typedef union Vector2
+typedef union
 {
     struct
     {
@@ -29,27 +29,27 @@ typedef union Vector2
     };
 
     f32 elements[2];
-} Vector2;
+} V2F;
 
-EXPORT_LIB Vector2 v2(f32 x, f32 y);
-EXPORT_LIB Vector2 add_v2(Vector2 left, Vector2 right);
-EXPORT_LIB Vector2 add_v2f(Vector2 left, f32 right);
-EXPORT_LIB Vector2 sub_v2(Vector2 left, Vector2 right);
-EXPORT_LIB Vector2 sub_v2f(Vector2 left, f32 right);
-EXPORT_LIB Vector2 mul_v2(Vector2 left, Vector2 right);
-EXPORT_LIB Vector2 mul_v2f(Vector2 left, f32 right);
-EXPORT_LIB Vector2 div_v2(Vector2 left, Vector2 right);
-EXPORT_LIB Vector2 div_v2f(Vector2 left, f32 right);
-EXPORT_LIB f32     dot_v2(Vector2 left, Vector2 right);
-EXPORT_LIB b32     is_equal_v2(Vector2 left, Vector2 right);
-EXPORT_LIB Vector2 norm_v2(Vector2 v);
-EXPORT_LIB f32     len_sqrt_v2(Vector2 v);
-EXPORT_LIB f32     len_v2(Vector2 v);
-EXPORT_LIB Vector2 lerp_v2(Vector2 left, Vector2 right, f32 time);
+EXPORT_LIB V2F v2f(f32 x, f32 y);
+EXPORT_LIB V2F v2f_add(V2F left, V2F right);
+EXPORT_LIB V2F v2f_addf(V2F left, f32 right);
+EXPORT_LIB V2F v2f_sub(V2F left, V2F right);
+EXPORT_LIB V2F v2f_subf(V2F left, f32 right);
+EXPORT_LIB V2F v2f_mul(V2F left, V2F right);
+EXPORT_LIB V2F v2f_mulf(V2F left, f32 right);
+EXPORT_LIB V2F v2f_div(V2F left, V2F right);
+EXPORT_LIB V2F v2f_divf(V2F left, f32 right);
+EXPORT_LIB f32 v2f_dot(V2F left, V2F right);
+EXPORT_LIB b32 v2f_eq(V2F left, V2F right);
+EXPORT_LIB V2F v2f_norm(V2F v);
+EXPORT_LIB f32 v2f_sqrt_len(V2F v);
+EXPORT_LIB f32 v2f_len(V2F v);
+EXPORT_LIB V2F v2f_lerp(V2F left, V2F right, f32 time);
 
-// Vector3
+// V3F
 
-typedef union Vector3
+typedef union
 {
     struct
     {
@@ -68,54 +68,54 @@ typedef union Vector3
 
     struct
     {
-        Vector2 xy;
-        f32     _ignored0;
+        V2F xy;
+        f32 _ignored0;
     };
 
     struct
     {
-        f32     _ignored1;
-        Vector2 yz;
+        f32 _ignored1;
+        V2F yz;
     };
 
     struct
     {
-        Vector2 uv;
-        f32     _ignored2;
+        V2F uv;
+        f32 _ignored2;
     };
 
     struct
     {
-        f32     _ignored3;
-        Vector2 vw;
+        f32 _ignored3;
+        V2F vw;
     };
 
     f32 elements[3];
-} Vector3;
+} V3F;
 
-EXPORT_LIB Vector3 v3(f32 x, f32 y, f32 z);
-EXPORT_LIB Vector3 add_v3(Vector3 left, Vector3 right);
-EXPORT_LIB Vector3 sub_v3(Vector3 left, Vector3 right);
-EXPORT_LIB Vector3 mul_v3(Vector3 left, Vector3 right);
-EXPORT_LIB Vector3 mul_v3f(Vector3 left, f32 right);
-EXPORT_LIB Vector3 div_v3(Vector3 left, Vector3 right);
-EXPORT_LIB Vector3 div_v3f(Vector3 left, f32 right);
-EXPORT_LIB f32     dot_v3(Vector3 left, Vector3 right);
-EXPORT_LIB b32     is_equal_v3(Vector3 left, Vector3 right);
-EXPORT_LIB Vector3 norm_v3(Vector3 v);
-EXPORT_LIB f32     len_sqrt_v3(Vector3 v);
-EXPORT_LIB f32     len_v3(Vector3 v);
-EXPORT_LIB Vector3 lerp_v3(Vector3 left, Vector3 right, f32 time);
+EXPORT_LIB V3F v3f(f32 x, f32 y, f32 z);
+EXPORT_LIB V3F v3f_add(V3F left, V3F right);
+EXPORT_LIB V3F v3f_sub(V3F left, V3F right);
+EXPORT_LIB V3F v3f_mul(V3F left, V3F right);
+EXPORT_LIB V3F v3f_mulf(V3F left, f32 right);
+EXPORT_LIB V3F v3f_div(V3F left, V3F right);
+EXPORT_LIB V3F v3f_divf(V3F left, f32 right);
+EXPORT_LIB f32 v3f_dot(V3F left, V3F right);
+EXPORT_LIB b32 v3f_eq(V3F left, V3F right);
+EXPORT_LIB V3F v3f_norm(V3F v);
+EXPORT_LIB f32 v3f_sqrt_len(V3F v);
+EXPORT_LIB f32 v3f_len(V3F v);
+EXPORT_LIB V3F v3f_lerp(V3F left, V3F right, f32 time);
 
-// Vector4
+// V4F
 
-typedef union Vector4
+typedef union
 {
     struct
     {
         union
         {
-            Vector3 xyz;
+            V3F xyz;
             struct
             {
                 f32 x, y, z;
@@ -129,7 +129,7 @@ typedef union Vector4
     {
         union
         {
-            Vector3 rgb;
+            V3F rgb;
             struct
             {
                 f32 r, g, b;
@@ -141,23 +141,23 @@ typedef union Vector4
 
     struct
     {
-        Vector2 xy;
-        f32     _ignored0;
-        f32     _ignored1;
+        V2F xy;
+        f32 _ignored0;
+        f32 _ignored1;
     };
 
     struct
     {
-        f32     _ignored2;
-        Vector2 yz;
-        f32     _ignored3;
+        f32 _ignored2;
+        V2F yz;
+        f32 _ignored3;
     };
 
     struct
     {
-        f32     _ignored4;
-        f32     _ignored5;
-        Vector2 zw;
+        f32 _ignored4;
+        f32 _ignored5;
+        V2F zw;
     };
 
     struct
@@ -173,20 +173,20 @@ typedef union Vector4
     };
 
     f32 elements[4];
-} Vector4;
+} V4F;
 
-EXPORT_LIB Vector4 v4(f32 x, f32 y, f32 z, f32 w);
-EXPORT_LIB Vector4 add_v4(Vector4 left, Vector4 right);
-EXPORT_LIB Vector4 sub_v4(Vector4 left, Vector4 right);
-EXPORT_LIB Vector4 mul_v4(Vector4 left, Vector4 right);
-EXPORT_LIB Vector4 mul_v4f(Vector4 left, f32 right);
-EXPORT_LIB Vector4 div_v4(Vector4 left, Vector4 right);
-EXPORT_LIB Vector4 div_v4f(Vector4 left, f32 right);
-EXPORT_LIB f32     dot_v4(Vector4 left, Vector4 right);
-EXPORT_LIB b32     is_equal_v4(Vector4 left, Vector4 right);
-EXPORT_LIB Vector4 norm_v4(Vector4 v);
-EXPORT_LIB f32     len_sqrt_v4(Vector4 v);
-EXPORT_LIB f32     len_v4(Vector4 v);
-EXPORT_LIB Vector4 lerp_v4(Vector4 left, Vector4 right, f32 time);
+EXPORT_LIB V4F v4f(f32 x, f32 y, f32 z, f32 w);
+EXPORT_LIB V4F v4f_add(V4F left, V4F right);
+EXPORT_LIB V4F v4f_sub(V4F left, V4F right);
+EXPORT_LIB V4F v4f_mul(V4F left, V4F right);
+EXPORT_LIB V4F v4f_mulf(V4F left, f32 right);
+EXPORT_LIB V4F v4f_div(V4F left, V4F right);
+EXPORT_LIB V4F v4f_divf(V4F left, f32 right);
+EXPORT_LIB f32 v4f_dot(V4F left, V4F right);
+EXPORT_LIB b32 v4f_eq(V4F left, V4F right);
+EXPORT_LIB V4F v4f_norm(V4F v);
+EXPORT_LIB f32 v4f_sqrt_len(V4F v);
+EXPORT_LIB f32 v4f_len(V4F v);
+EXPORT_LIB V4F v4f_lerp(V4F left, V4F right, f32 time);
 
 #endif // FORGE_CONTAINER_VECTOR_H

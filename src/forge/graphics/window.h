@@ -46,6 +46,6 @@ typedef struct WindowState
 EXPORT_LIB WindowState *window_open(const char *title, i32 xpos, i32 ypos,
                                     i32 width, i32 height);
 EXPORT_LIB void         window_close(WindowState *window);
-EXPORT_LIB void         window_poll_event(WindowEvent *return_event);
+EXPORT_LIB void         window_event_handler(WindowEvent *return_event);
 
 #endif // FORGE_GRAPHICS_WINDOW_H

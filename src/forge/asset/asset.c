@@ -25,33 +25,8 @@ asset_destroy(void)
     IMG_Quit();
 }
 
-Image *
-asset_load_image(const char *file_path)
-{
-    Image *result = calloc(sizeof(Image), 1);
-
-    result->surface = IMG_Load(file_path);
-    if (result == NULL)
-    {
-        log_error("Failed to load image: %s\n", IMG_GetError());
-        return result;
-    }
-
-    WindowState *window = gfx_get_window();
-    result->texture
-        = SDL_CreateTextureFromSurface(window->renderer, result->surface);
-
-    return result;
-}
-
-void
-asset_unload_image(Image *image)
-{
-    SDL_FreeSurface(image->surface);
-}
-
 void *
-asset_load_rw_data(const char *file_path)
+asset_file_rw_data_load(const char *file_path)
 {
     u64   size = 0;
     FILE *file = fopen(file_path, "rb");
@@ -86,10 +61,35 @@ asset_load_rw_data(const char *file_path)
     return buffer;
 }
 
-Vector2
-asset_image_get_size(Image *image)
+Image *
+asset_image_load(const char *file_path)
 {
-    Vector2 result;
+    Image *result = calloc(sizeof(Image), 1);
+
+    result->surface = IMG_Load(file_path);
+    if (result == NULL)
+    {
+        log_error("Failed to load image: %s\n", IMG_GetError());
+        return result;
+    }
+
+    WindowState *window = gfx_window_get();
+    result->texture
+        = SDL_CreateTextureFromSurface(window->renderer, result->surface);
+
+    return result;
+}
+
+void
+asset_image_unload(Image *image)
+{
+    SDL_FreeSurface(image->surface);
+}
+
+V2F
+asset_image_size_get(Image *image)
+{
+    V2F result;
     result.width = image->surface->w;
     result.height = image->surface->h;
     return result;
