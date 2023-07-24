@@ -1,4 +1,4 @@
-<h1 align="center">GameEngine</h1>
+<h1 align="center">C code base</h1>
 
 ## Build linux
 ```sheel
