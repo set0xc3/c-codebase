@@ -19,11 +19,11 @@ const flags = [_][]const u8{
     "-gen-cdb-fragment-path",
     "cdb",
     "-std=c11",
+    "-DEXPORT",
 };
 
 const iflags = [_][]const u8{
-    "-I",
-    "core/src",
+    "-Icore/src",
 };
 
 pub fn platform_settings(step: *Step.Compile, target: CrossTarget) void {

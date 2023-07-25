@@ -10,12 +10,12 @@ library_load(const char *path)
     char *dot      = ".";
     u64   dot_size = strlen(dot);
 
-    u64      size     = strlen(path) + strlen(PLATFORM_LIB_EXT) + dot_size;
+    u64      size     = strlen(path) + strlen(LIBRARY_EXTENSION) + dot_size;
     CString8 path_ext = { (u8 *)alloca(size), size };
     strncpy((char *)path_ext.str, path, path_ext.size);
 
     strncat((char *)path_ext.str, dot, path_ext.size);
-    strncat((char *)path_ext.str, PLATFORM_LIB_EXT, path_ext.size);
+    strncat((char *)path_ext.str, LIBRARY_EXTENSION, path_ext.size);
 
     result.handle = SDL_LoadObject((const char *)path_ext.str);
     if (result.handle == NULL)
