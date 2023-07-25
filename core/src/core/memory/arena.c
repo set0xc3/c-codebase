@@ -4,21 +4,8 @@
 #include <memory.h>
 #include <stdlib.h>
 
-struct CMemoryArena
-{
-    u8 *data;
-    u64 size;
-    u64 pos;
-};
-
-struct CMemoryArenaTemp
-{
-    CMemoryArena *arena;
-    u64           pos;
-};
-
 CMemoryArena *
-arena_create(u64 size)
+arena_create(CCoreState *core, u64 size)
 {
     CMemoryArena *arena = MemoryAllocStruct(CMemoryArena);
     arena->data         = MemoryAllocArray(u8, size);
@@ -28,18 +15,18 @@ arena_create(u64 size)
 }
 
 void
-arena_destroy(CMemoryArena *arena)
+arena_destroy(CCoreState *core, CMemoryArena *arena)
 {
     MemoryFree(arena->data);
     MemoryFree(arena);
 }
 
 void *
-arena_push(CMemoryArena *arena, u64 size)
+arena_push(CCoreState *core, CMemoryArena *arena, u64 size)
 {
     if (arena->pos + size > arena->size)
     {
-        log_error("Handle out-of-memory\n");
+        LOG_ERROR("Handle out-of-memory\n");
         assert(true);
     }
 
@@ -49,19 +36,19 @@ arena_push(CMemoryArena *arena, u64 size)
 }
 
 void *
-arena_push_zero(CMemoryArena *arena, u64 size)
+arena_push_zero(CCoreState *core, CMemoryArena *arena, u64 size)
 {
-    void *memory = arena_push(arena, size);
+    void *memory = arena_push(core, arena, size);
     memset(memory, 0, size);
     return memory;
 }
 
 void *
-arena_pop(CMemoryArena *arena, u64 size)
+arena_pop(CCoreState *core, CMemoryArena *arena, u64 size)
 {
     if (arena->pos == 0)
     {
-        log_error("Handle out-of-memory\n");
+        LOG_ERROR("Handle out-of-memory\n");
         assert(true);
     }
 

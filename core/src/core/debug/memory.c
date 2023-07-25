@@ -1,74 +1,75 @@
 #include "core/core.h"
 
-#include "core/debug/internal.h"
-
 void
-debug_memory_handle(void)
+debug_memory_handle(CCoreState *core)
 {
     u64 memory_used = 0;
 
-    for (u64 i = 0; i < debug_state.memory_block_count; i++)
+    for (u64 i = 0; i < core->debug->memory_block_count; i++)
     {
-        CDebugMemoryBlock *block = &debug_state.memory_blocks[i];
+        CDebugMemoryBlock *block = &core->debug->memory_blocks[i];
         if (block->memory)
         {
             memory_used += block->size;
 
-            // log_info("memory.block: %s:%lu\n", block->file_path,
+            // LOG_DEBUG("memory.block: %s:%lu\n", block->file_path,
             // block->line);
         }
     }
 
-    log_debug("memory.total     (0)\n");
-    log_debug("memory.used      (%ld)\n", memory_used);
-    log_debug("memory.available (0)\n");
-    log_debug("memory.cached    (0)\n");
-    log_debug("memory.freed     (0)\n");
+    LOG_DEBUG("memory.total     (0)\n");
+    LOG_DEBUG("memory.used      (%ld)\n", memory_used);
+    LOG_DEBUG("memory.available (0)\n");
+    LOG_DEBUG("memory.cached    (0)\n");
+    LOG_DEBUG("memory.freed     (0)\n");
 }
 
 void *
-_debug_memory_alloc(u64 size, const char *file_path, u64 line)
+_debug_memory_alloc(CCoreState *core, u64 size, const char *file_path,
+                    u64 line)
 {
     void *memory = malloc(size);
     if (memory == NULL)
     {
-        log_error("Failed allocate memory\n");
+        LOG_ERROR("Failed allocate memory\n");
     }
 
-    if (debug_state.memory_block_count < MEMORY_BLOCKS_MAX)
+    if (core->debug->memory_block_count < PROFILER_MEMORY_BLOCKS_MAX)
     {
         CDebugMemoryBlock *block
-            = &debug_state.memory_blocks[debug_state.memory_block_count];
+            = &core->debug->memory_blocks[core->debug->memory_block_count];
         block->memory    = memory;
         block->size      = size;
         block->file_path = file_path;
         block->line      = line;
-        debug_state.memory_block_count++;
+        core->debug->memory_block_count++;
 
-        // log_info("memory.alloced: %s:%lu\n", block->file_path, block->line);
+        // LOG_DEBUG("memory.alloced: %s:%lu\n", block->file_path,
+        // block->line);
     }
 
     return memory;
 }
 
 void
-_debug_memory_free(void *memory, const char *file_path, u64 line)
+_debug_memory_free(CCoreState *core, void *memory, const char *file_path,
+                   u64 line)
 {
-    if (debug_state.memory_block_count > 0)
+    if (core->debug->memory_block_count > 0)
     {
         CDebugMemoryBlock *top_block
-            = &debug_state.memory_blocks[debug_state.memory_block_count - 1];
+            = &core->debug->memory_blocks[core->debug->memory_block_count - 1];
 
-        for (u64 i = 0; i < debug_state.memory_block_count; i++)
+        for (u64 i = 0; i < core->debug->memory_block_count; i++)
         {
-            CDebugMemoryBlock *block = &debug_state.memory_blocks[i];
+            CDebugMemoryBlock *block = &core->debug->memory_blocks[i];
 
             if (block->memory == memory)
             {
                 memcpy(block, top_block, sizeof(CDebugMemoryBlock));
-                debug_state.memory_block_count--;
+                core->debug->memory_block_count--;
 
-                // log_info("memory.freed: %s:%lu\n", file_path, line);
+                // LOG_DEBUG("memory.freed: %s:%lu\n", file_path, line);
                 break;
             }
         }
@@ -82,7 +83,7 @@ _debug_memory_zero(void *memory, u64 size, const char *file_path, u64 line)
 {
     memset(memory, 0, size);
 
-    // log_info("memory.zero: %s:%lu\n", file_path, line);
+    // LOG_DEBUG("memory.zero: %s:%lu\n", file_path, line);
 }
 
 void
@@ -90,5 +91,5 @@ _debug_memory_copy(void *dest, void *src, u64 size, const char *file_path,
                    u64 line)
 {
     memcpy(dest, src, size);
-    // log_info("memory.copy: %s:%lu\n", file_path, line);
+    // LOG_DEBUG("memory.copy: %s:%lu\n", file_path, line);
 }

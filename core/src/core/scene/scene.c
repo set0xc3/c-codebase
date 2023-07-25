@@ -1,55 +1,53 @@
 #include "core/core.h"
 
-global_variable CSceneState *scene_state;
-
 void
-scene_startup(void)
+scene_startup(CCoreState *core)
 {
-    scene_state = MemoryAllocStruct(CSceneState);
-    MemoryZeroStruct(scene_state, CSceneState);
+    core->scene = MemoryAllocStruct(CSceneState);
+    MemoryZeroStruct(core->scene, CSceneState);
 
-    scene_state->entities = MemoryAllocArray(CEntity, SCENE_ENTITIES_MAX);
-    MemoryZeroArray(scene_state->entities, CEntity, SCENE_ENTITIES_MAX);
+    core->scene->entities = MemoryAllocArray(CEntity, SCENE_ENTITIES_MAX);
+    MemoryZeroArray(core->scene->entities, CEntity, SCENE_ENTITIES_MAX);
 
-    scene_state->entities_selected
+    core->scene->entities_selected
         = MemoryAllocArray(CEntityID, SCENE_ENTITIES_MAX);
-    MemoryZeroArray(scene_state->entities_selected, CEntityID,
+    MemoryZeroArray(core->scene->entities_selected, CEntityID,
                     SCENE_ENTITIES_MAX);
 }
 
 void
-scene_update(f32 dt)
+scene_update(CCoreState *core, f32 dt)
 {
 }
 
 void
-scene_shutdown(void)
+scene_shutdown(CCoreState *core)
 {
 }
 
 void
-scene_clear(void)
+scene_clear(CCoreState *core)
 {
 }
 
 CEntity *
-scene_entity_create(void)
+scene_entity_create(CCoreState *core)
 {
-    CEntity *result = scene_state->entities + scene_state->entities_count;
+    CEntity *result = core->scene->entities + core->scene->entities_count;
     result->uuid    = uuid_gen();
     result->scale   = v3(1.0f, 1.0f, 1.0f);
     result->flags   = EntityFlag_Everything;
-    scene_state->entities_count++;
+    core->scene->entities_count++;
     return result;
 }
 
 void
-scene_entity_destroy(CEntity *entity)
+scene_entity_destroy(CCoreState *core, CEntity *entity)
 {
-    scene_state->entities_count--;
+    core->scene->entities_count--;
     MemoryFree(entity->uuid);
     MemoryCopyStruct(entity,
-                     scene_state->entities + scene_state->entities_count - 1,
+                     core->scene->entities + core->scene->entities_count - 1,
                      CEntity);
     // MemoryZeroStruct(entity, CEntity);
 }

@@ -22,29 +22,29 @@
 #include <SDL2/SDL_timer.h>
 
 void
-core_startup(void)
+core_startup(CCoreState *core)
 {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_EVENTS) < 0)
     {
-        log_error("SDL could not initialize: %s\n", SDL_GetError());
+        LOG_ERROR("SDL could not initialize: %s\n", SDL_GetError());
     }
 }
 
 void
-core_update(void)
+core_update(CCoreState *core)
 {
-    input_update();
-    core_poll_event();
+    input_update(core);
+    core_poll_event(core);
 }
 
 void
-core_shutdown(void)
+core_shutdown(CCoreState *core)
 {
     SDL_Quit();
 }
 
 b8
-core_poll_event(void)
+core_poll_event(CCoreState *core)
 {
     CEvent    send_event = { 0 };
     SDL_Event raw_event  = { 0 };
@@ -54,7 +54,7 @@ core_poll_event(void)
         switch (raw_event.type)
         {
         case SDL_QUIT:
-            event_fire(EventCode_AppQuit, send_event);
+            event_fire(core, EventCode_AppQuit, send_event);
             break;
 
         case SDL_WINDOWEVENT:
@@ -63,17 +63,18 @@ core_poll_event(void)
             {
                 send_event.data.i32[0] = raw_event.window.data1;
                 send_event.data.i32[1] = raw_event.window.data2;
-                event_fire(EventCode_WindowResized, send_event);
+                event_fire(core, EventCode_WindowResized, send_event);
             }
         }
         break;
 
         case SDL_MOUSEMOTION:
-            input_mouse_motion_process(raw_event.motion.x, raw_event.motion.y);
+            input_mouse_motion_process(core, raw_event.motion.x,
+                                       raw_event.motion.y);
             break;
 
         case SDL_MOUSEWHEEL:
-            input_mouse_scroll_process(raw_event.wheel.y);
+            input_mouse_scroll_process(core, raw_event.wheel.y);
             break;
 
         case SDL_MOUSEBUTTONDOWN:
@@ -97,7 +98,7 @@ core_poll_event(void)
 
             if (button != MouseButton_Count)
             {
-                input_button_process(button, pressed);
+                input_button_process(core, button, pressed);
             }
         }
         break;
@@ -135,7 +136,7 @@ core_poll_event(void)
 
             if (key != KeyCode_Count)
             {
-                input_key_process(key, pressed);
+                input_key_process(core, key, pressed);
             }
         }
         break;
@@ -146,19 +147,19 @@ core_poll_event(void)
 }
 
 void
-core_sleep(u32 ms)
+core_sleep(CCoreState *core, u32 ms)
 {
     SDL_Delay(ms);
 }
 
 u64
-core_perf_counter(void)
+core_perf_counter(CCoreState *core)
 {
     return SDL_GetPerformanceCounter();
 }
 
 u64
-core_perf_frequency(void)
+core_perf_frequency(CCoreState *core)
 {
     return SDL_GetPerformanceFrequency();
 }

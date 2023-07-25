@@ -2,15 +2,6 @@
 
 #include <stdarg.h>
 
-typedef enum CLoggerType
-{
-    LoggerType_Info,
-    LoggerType_Debug,
-    LoggerType_Warning,
-    LoggerType_Error,
-    LoggerType_Count,
-} CLoggerType;
-
 const char *logger_types_string[LoggerType_Count] = {
     "INFO",
     "DEBUG",
@@ -19,7 +10,8 @@ const char *logger_types_string[LoggerType_Count] = {
 };
 
 void
-log_message(CLoggerType type, const char *format, va_list args)
+log_message(CCoreState *core, CLoggerType type, const char *format,
+            va_list args)
 {
     char       *buffer       = NULL;
     FILE       *stream       = NULL;
@@ -43,37 +35,10 @@ log_message(CLoggerType type, const char *format, va_list args)
 }
 
 void
-log_info(const char *format, ...)
+log_print(CCoreState *core, CLoggerType type, const char *format, ...)
 {
     va_list args;
     va_start(args, format);
-    log_message(LoggerType_Info, format, args);
-    va_end(args);
-}
-
-void
-log_debug(const char *format, ...)
-{
-    va_list args;
-    va_start(args, format);
-    log_message(LoggerType_Debug, format, args);
-    va_end(args);
-}
-
-void
-log_warning(const char *format, ...)
-{
-    va_list args;
-    va_start(args, format);
-    log_message(LoggerType_Warning, format, args);
-    va_end(args);
-}
-
-void
-log_error(const char *format, ...)
-{
-    va_list args;
-    va_start(args, format);
-    log_message(LoggerType_Error, format, args);
+    log_message(core, type, format, args);
     va_end(args);
 }

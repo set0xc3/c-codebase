@@ -1,6 +1,8 @@
 #ifndef CORE_H
 #define CORE_H
 
+#include <SDL2/SDL.h>
+
 // Base Types
 
 #include <assert.h>
@@ -59,11 +61,10 @@ typedef i64 b64;
 
 #ifdef LINUX
 #ifdef EXPORT
-#define API __attribute__((visibility("default")))
+#define API __attribute__((dllexport))
 #else
-#define API
+#define API __attribute__((dllimport))
 #endif // EXPORT
-#define API __attribute__((visibility("default")))
 #elif defined(WINDOWS)
 #ifdef EXPORT
 #define API __declspec(dllexport)
@@ -73,43 +74,61 @@ typedef i64 b64;
 #endif
 
 // Structures
-typedef struct CString8         CString8;
-typedef union CVector2          CVector2;
-typedef union CVector3          CVector3;
-typedef union CVector4          CVector4;
-typedef struct CImage           CImage;
-typedef struct CAsset           CAsset;
-typedef struct CAudio           CAudio;
-typedef struct CDebugState      CDebugState;
-typedef char                   *CEntityID;
-typedef enum CEntityFlags       CEntityFlags;
-typedef struct CEntity          CEntity;
-typedef struct CSceneState      CSceneState;
-typedef struct CWindow          CWindow;
-typedef enum CEventCode         CEventCode;
-typedef struct CEvent           CEvent;
-typedef enum CMouseButton       CMouseButton;
-typedef enum CKeyCode           CKeyCode;
-typedef struct CKeyboardState   CKeyboardState;
-typedef struct CMouseState      CMouseState;
-typedef struct CInputState      CInputState;
-typedef struct CModuleAPI       CModuleAPI;
-typedef struct CLayer           CLayer;
-typedef struct CLibrary         CLibrary;
-typedef struct CMemoryArena     CMemoryArena;
-typedef struct CMemoryArenaTemp CMemoryArenaTemp;
-typedef struct CMouduleMemory   CMouduleMemory;
-typedef struct CCoreState       CCoreState;
+typedef struct CString8           CString8;
+typedef union CVector2            CVector2;
+typedef union CVector3            CVector3;
+typedef union CVector4            CVector4;
+typedef struct CImage             CImage;
+typedef struct CAsset             CAsset;
+typedef struct CAudio             CAudio;
+typedef struct CDebugMemoryBlock  CDebugMemoryBlock;
+typedef struct CDebugProfilerFunc CDebugProfilerFunc;
+typedef struct CDebugState        CDebugState;
+typedef char                     *CEntityID;
+typedef enum CEntityFlags         CEntityFlags;
+typedef struct CEntity            CEntity;
+typedef struct CSceneState        CSceneState;
+typedef struct CWindow            CWindow;
+typedef enum CEventCode           CEventCode;
+typedef struct CEvent             CEvent;
+typedef struct CEventListener     CEventListener;
+typedef struct CEventState        CEventState;
+typedef enum CMouseButton         CMouseButton;
+typedef enum CKeyCode             CKeyCode;
+typedef struct CKeyboardState     CKeyboardState;
+typedef struct CMouseState        CMouseState;
+typedef struct CInputState        CInputState;
+typedef struct CModuleAPI         CModuleAPI;
+typedef struct CLayer             CLayer;
+typedef struct CLibrary           CLibrary;
+typedef enum CLoggerType          CLoggerType;
+typedef struct CMemoryArena       CMemoryArena;
+typedef struct CMemoryArenaTemp   CMemoryArenaTemp;
+typedef struct CMouduleMemory     CMouduleMemory;
+typedef struct CCoreState         CCoreState;
+
+typedef b8 (*event_on_listener)(u32 code, CEvent event);
 
 // Core Interface
 
-API void core_startup(void);
-API void core_update(void);
-API void core_shutdown(void);
-API b8   core_poll_event(void);
-API void core_sleep(u32 ms);
-API u64  core_perf_counter(void);
-API u64  core_perf_frequency(void);
+struct CCoreState
+{
+    CDebugState *debug;
+    CSceneState *scene;
+    CWindow     *window;
+    CEventState *event;
+    CInputState *input;
+    CLayer      *layer;
+    CLibrary    *game_dll;
+};
+
+API void core_startup(CCoreState *core);
+API void core_update(CCoreState *core);
+API void core_shutdown(CCoreState *core);
+API b8   core_poll_event(CCoreState *core);
+API void core_sleep(CCoreState *core, u32 ms);
+API u64  core_perf_counter(CCoreState *core);
+API u64  core_perf_frequency(CCoreState *core);
 
 // Container Interface
 
@@ -125,7 +144,10 @@ struct CString8
 
 API CString8 str8(const char *c);
 API b8       str8_eq(const CString8 left, const CString8 right);
-API CString8 str8_replace_all(CMemoryArena *arena, CString8 a, CString8 b);
+API CString8 str8_concat(CMemoryArena *arena, CString8 dest,
+                         CString8 src); // TODO
+API CString8 str8_replace(CMemoryArena *arena, CString8 dest,
+                          CString8 src); // TODO
 
 #define str8_c(s) (const char *)s.str
 
@@ -333,20 +355,49 @@ API void    audio_stop(CAudio *audio_state);
 
 // Debug Interface
 
-API void debug_startup(void);
-API void debug_shutdown(void);
-API void debug_update(void);
+#define PROFILER_MEMORY_BLOCKS_MAX 1000
+#define PROFILER_FUNCTIONS_MAX     1000
 
-API void debug_memory_handle(void);
+struct CDebugMemoryBlock
+{
+    void       *memory;
+    u64         size;
+    const char *file_path;
+    u32         line;
+};
 
-API void *_debug_memory_alloc(u64 size, const char *file_path, u64 line);
-API void  _debug_memory_free(void *memory, const char *file_path, u64 line);
-API void  _debug_memory_zero(void *memory, u64 size, const char *file_path,
-                             u64 line);
-API void  _debug_memory_copy(void *dest, void *src, u64 size,
-                             const char *file_path, u64 line);
+struct CDebugProfilerFunc
+{
+    const char *name;
+    u64         cycle_count;
+    u64         hit_count;
+};
 
-API void *_debug_profiler_timed_block_begin(const char *func_name);
+struct CDebugState
+{
+    CDebugMemoryBlock memory_blocks[PROFILER_MEMORY_BLOCKS_MAX];
+    u64               memory_block_count;
+
+    CDebugProfilerFunc functions[PROFILER_FUNCTIONS_MAX];
+    u64                function_count;
+};
+
+// Debug profiler Interface
+
+void debug_profiler_startup(CCoreState *core);
+void debug_profiler_shutdown(CCoreState *core);
+void debug_profiler_handle(CCoreState *core);
+
+CDebugProfilerFunc *debug_profiler_function_add(CCoreState *core,
+                                                const char *func_name);
+CDebugProfilerFunc *debug_profiler_function_find(CCoreState *core,
+                                                 const char *func_name);
+API void            debug_startup(CCoreState *core);
+API void            debug_shutdown(CCoreState *core);
+API void            debug_update(CCoreState *core);
+
+API void *_debug_profiler_timed_block_begin(CCoreState *core,
+                                            const char *func_name);
 API void  _debug_profiler_timed_block_end(void *counter_ptr, u64 cycle_count);
 
 #define PROFILER_BEGIN(NAME)                                                  \
@@ -357,6 +408,19 @@ API void  _debug_profiler_timed_block_end(void *counter_ptr, u64 cycle_count);
     u64 end_##NAME = core_perf_counter();                                     \
     _debug_profiler_timed_block_end(current_counter_##NAME,                   \
                                     end_##NAME - start_##NAME);
+
+// Debug memory Interface
+
+API void debug_memory_handle(CCoreState *core);
+
+API void *_debug_memory_alloc(CCoreState *core, u64 size,
+                              const char *file_path, u64 line);
+API void  _debug_memory_free(CCoreState *core, void *memory,
+                             const char *file_path, u64 line);
+API void  _debug_memory_zero(void *memory, u64 size, const char *file_path,
+                             u64 line);
+API void  _debug_memory_copy(void *dest, void *src, u64 size,
+                             const char *file_path, u64 line);
 
 // Entity Interface
 
@@ -394,24 +458,40 @@ struct CSceneState
     u64        entities_count;
 };
 
-API void scene_startup(void);
-API void scene_update(f32 dt);
-API void scene_shutdown(void);
+API void scene_startup(CCoreState *core);
+API void scene_update(CCoreState *core, f32 dt);
+API void scene_shutdown(CCoreState *core);
+API void scene_clear(CCoreState *core);
 
-API CEntity *scene_entity_create(void);
-API void     scene_entity_destroy(CEntity *entity);
+API CEntity *scene_entity_create(CCoreState *core);
+API void     scene_entity_destroy(CCoreState *core, CEntity *entity);
 
 // UUID Interface
 API char *uuid_gen(void); // NOTE: allocates memory!
 
 // Window Interface
 
-API CWindow *window_open(const char *title, i32 xpos, i32 ypos, i32 width,
-                         i32 height);
-API void     window_close(CWindow *window);
-API b8       window_poll_events(void);
+struct CWindow
+{
+    SDL_Window   *handle;
+    SDL_Renderer *renderer;
+    SDL_Texture  *texture;
+    const char   *title;
+    struct
+    {
+        i32 x, y;
+        i32 width, height;
+    } rect;
+};
+
+API CWindow *window_open(CCoreState *core, const char *title, i32 xpos,
+                         i32 ypos, i32 width, i32 height);
+API void     window_close(CCoreState *core, CWindow *window);
+API b8       window_poll_events(CCoreState *core);
 
 // Event Interface
+
+#define EVENT_LISTENERS_MAX 1000
 
 enum CEventCode
 {
@@ -451,13 +531,25 @@ struct CEvent
     } data;
 };
 
-typedef b8 (*event_on_listener)(u32 code, CEvent event);
+struct CEventListener
+{
+    u32               code;
+    event_on_listener callback;
+};
 
-API b8 event_startup(void);
-API b8 event_shutdown(void);
-API b8 event_register(u32 code, event_on_listener on_listener);
-API b8 event_unregister(u32 code, event_on_listener on_listener);
-API b8 event_fire(u32 code, CEvent event);
+struct CEventState
+{
+    CEventListener *listeners;
+    u64             listeners_count;
+};
+
+API b8 event_startup(CCoreState *core);
+API b8 event_shutdown(CCoreState *core);
+API b8 event_register(CCoreState *core, u32 code,
+                      event_on_listener on_listener);
+API b8 event_unregister(CCoreState *core, u32 code,
+                        event_on_listener on_listener);
+API b8 event_fire(CCoreState *core, u32 code, CEvent event);
 
 // Input Interface
 
@@ -502,23 +594,23 @@ struct CInputState
     CMouseState mouse_previous;
 };
 
-API void input_startup(void);
-API void input_shutdown(void);
+API void input_startup(CCoreState *core);
+API void input_shutdown(CCoreState *core);
 
-API void input_button_process(u32 button, b8 pressed);
-API void input_key_process(u32 key, b8 pressed);
-API void input_mouse_motion_process(i32 x, i32 y);
-API void input_mouse_scroll_process(i32 delta);
+API void input_button_process(CCoreState *core, u32 button, b8 pressed);
+API void input_key_process(CCoreState *core, u32 key, b8 pressed);
+API void input_mouse_motion_process(CCoreState *core, i32 x, i32 y);
+API void input_mouse_scroll_process(CCoreState *core, i32 delta);
 
-API void input_update(void);
-API b8   input_button_pressed(u32 button);
-API b8   input_button_down(u32 button);
-API b8   input_button_up(u32 button);
-API b8   input_key_pressed(u32 key);
-API b8   input_key_down(u32 key);
-API b8   input_key_up(u32 key);
-API void input_mouse_position_get(i32 *x, i32 *y);
-API void input_mouse_wheel_get(i32 *delta);
+API void input_update(CCoreState *core);
+API b8   input_button_pressed(CCoreState *core, u32 button);
+API b8   input_button_down(CCoreState *core, u32 button);
+API b8   input_button_up(CCoreState *core, u32 button);
+API b8   input_key_pressed(CCoreState *core, u32 key);
+API b8   input_key_down(CCoreState *core, u32 key);
+API b8   input_key_up(CCoreState *core, u32 key);
+API void input_mouse_position_get(CCoreState *core, i32 *x, i32 *y);
+API void input_mouse_wheel_get(CCoreState *core, i32 *delta);
 
 // Module Interface
 
@@ -552,16 +644,33 @@ struct CLibrary
     CModuleAPI api;
 };
 
-API CLibrary library_load(const char *path);
-API void     library_unload(CLibrary *library);
-API void    *library_load_function(CLibrary *library, const char *name);
+API CLibrary library_load(CCoreState *core, const char *path);
+API void     library_unload(CCoreState *core, CLibrary *library);
+API void    *library_load_function(CCoreState *core, CLibrary *library,
+                                   const char *name);
 
 // Logger Interface
 
-API void log_info(const char *format, ...);
-API void log_debug(const char *format, ...);
-API void log_warning(const char *format, ...);
-API void log_error(const char *format, ...);
+enum CLoggerType
+{
+    LoggerType_Info,
+    LoggerType_Debug,
+    LoggerType_Warning,
+    LoggerType_Error,
+    LoggerType_Count,
+};
+
+API void log_print(CCoreState *core, CLoggerType type, const char *format,
+                   ...);
+
+#define LOG_INFO(format, ...)                                                 \
+    log_print(core, LoggerType_Info, format, ##__VA_ARGS__)
+#define LOG_DEBUG(format, ...)                                                \
+    log_print(core, LoggerType_Debug, format, ##__VA_ARGS__)
+#define LOG_WARRNING(format, ...)                                             \
+    log_print(core, LoggerType_Warrning, format, ##__VA_ARGS__)
+#define LOG_ERROR(format, ...)                                                \
+    log_print(core, LoggerType_Error, format, ##__VA_ARGS__)
 
 // Math Interface
 
@@ -587,10 +696,23 @@ API f64 m_degrees(f64 radian);
 
 // Memory Interface
 
+struct CMemoryArena
+{
+    u8 *data;
+    u64 size;
+    u64 pos;
+};
+
+struct CMemoryArenaTemp
+{
+    CMemoryArena *arena;
+    u64           pos;
+};
+
 #ifndef NDEBUG
 #define MemoryAlloc(type, size)                                               \
-    (type *)_debug_memory_alloc(size * sizeof(type), __FILE__, __LINE__)
-#define MemoryFree(memory) _debug_memory_free(memory, __FILE__, __LINE__)
+    (type *)_debug_memory_alloc(core, size * sizeof(type), __FILE__, __LINE__)
+#define MemoryFree(memory) _debug_memory_free(core, memory, __FILE__, __LINE__)
 #define MemoryZero(memory, type, size)                                        \
     _debug_memory_zero(memory, size * sizeof(type), __FILE__, __LINE__)
 #define MemoryCopy(dest, src, type, size)                                     \
@@ -611,13 +733,13 @@ API f64 m_degrees(f64 radian);
     MemoryCopy(dest, src, type, size)
 #define MemoryCopyStruct(dest, src, type) MemoryCopy(dest, src, type, 1)
 
-API CMemoryArena *arena_create(u64 size);
-API void          arena_destroy(CMemoryArena *arena);
-API void         *arena_push(CMemoryArena *arena, u64 size);
-API void         *arena_push_zero(CMemoryArena *arena, u64 size);
-API void         *arena_pop(CMemoryArena *arena, u64 size);
-API void          arena_clear(CMemoryArena *arena);
-API u64           arena_offset_get(CMemoryArena *arena);
+API CMemoryArena *arena_create(CCoreState *core, u64 size);
+API void          arena_destroy(CCoreState *core, CMemoryArena *arena);
+API void         *arena_push(CCoreState *core, CMemoryArena *arena, u64 size);
+API void *arena_push_zero(CCoreState *core, CMemoryArena *arena, u64 size);
+API void *arena_pop(CCoreState *core, CMemoryArena *arena, u64 size);
+API void  arena_clear(CMemoryArena *arena);
+API u64   arena_offset_get(CMemoryArena *arena);
 
 API CMemoryArenaTemp arena_temp_begin(CMemoryArena *arena);
 API void             arena_temp_end(CMemoryArenaTemp temp);

@@ -19,6 +19,7 @@ const flags = [_][]const u8{
     "-gen-cdb-fragment-path",
     "cdb",
     "-std=c11",
+    "-E",
     "-DEXPORT",
 };
 

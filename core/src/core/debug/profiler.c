@@ -1,34 +1,32 @@
 #include "core/core.h"
 
-#include "core/debug/internal.h"
-
 void
-debug_profiler_startup(void)
+debug_profiler_startup(CCoreState *core)
 {
 }
 
 void
-debug_profiler_shutdown(void)
+debug_profiler_shutdown(CCoreState *core)
 {
 }
 
 void
-debug_profiler_handle(void)
+debug_profiler_handle(CCoreState *core)
 {
-    for (u64 i = 0; i < debug_state.function_count; i++)
+    for (u64 i = 0; i < core->debug->function_count; i++)
     {
-        CDebugProfilerFunc *function = &debug_state.functions[i];
+        CDebugProfilerFunc *function = &core->debug->functions[i];
         if (function->hit_count)
         {
             f64 dt = (f64)((f64)function->cycle_count
-                           / (f64)core_perf_frequency());
+                           / (f64)core_perf_frequency(core));
 
             f64 dt_cyh
                 = (f64)(((f64)function->cycle_count / function->hit_count)
-                        / (f64)core_perf_frequency());
+                        / (f64)core_perf_frequency(core));
 
 #if 0
-            log_info("%s: %lu/cy : %lu/h : %lu/cy/h : %.3f/ms : %.3f/cy/ms\n",
+            LOG_INFO("%s: %lu/cy : %lu/h : %lu/cy/h : %.3f/ms : %.3f/cy/ms\n",
                      function->name, function->cycle_count,
                      function->hit_count,
                      function->cycle_count / function->hit_count,
@@ -41,32 +39,32 @@ debug_profiler_handle(void)
 }
 
 CDebugProfilerFunc *
-debug_profiler_function_add(const char *func_name)
+debug_profiler_function_add(CCoreState *core, const char *func_name)
 {
-    debug_state.functions[debug_state.function_count].name = func_name;
-    debug_state.function_count++;
+    core->debug->functions[core->debug->function_count].name = func_name;
+    core->debug->function_count++;
 
-    return &debug_state.functions[debug_state.function_count - 1];
+    return &core->debug->functions[core->debug->function_count - 1];
 }
 
 CDebugProfilerFunc *
-debug_profiler_function_find(const char *func_name)
+debug_profiler_function_find(CCoreState *core, const char *func_name)
 {
-    for (u64 i = 0; i < debug_state.function_count; i++)
+    for (u64 i = 0; i < core->debug->function_count; i++)
     {
-        if (strcmp(func_name, debug_state.functions[i].name) == 0)
+        if (strcmp(func_name, core->debug->functions[i].name) == 0)
         {
-            return &debug_state.functions[i];
+            return &core->debug->functions[i];
         }
     }
 
-    return debug_profiler_function_add(func_name);
+    return debug_profiler_function_add(core, func_name);
 }
 
 void *
-_debug_profiler_timed_block_begin(const char *func_name)
+_debug_profiler_timed_block_begin(CCoreState *core, const char *func_name)
 {
-    return debug_profiler_function_find(func_name);
+    return debug_profiler_function_find(core, func_name);
 }
 
 void

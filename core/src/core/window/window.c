@@ -1,11 +1,8 @@
 #include "core/core.h"
 
-#include <SDL2/SDL.h>
-
-#include "core/window/window_internal.c"
-
 CWindow *
-window_open(const char *title, i32 xpos, i32 ypos, i32 width, i32 height)
+window_open(CCoreState *core, const char *title, i32 xpos, i32 ypos, i32 width,
+            i32 height)
 {
     CWindow *result = MemoryAllocStruct(CWindow);
     MemoryZeroStruct(result, CWindow);
@@ -21,7 +18,7 @@ window_open(const char *title, i32 xpos, i32 ypos, i32 width, i32 height)
                                         result->rect.height, window_flags);
     if (!result->handle)
     {
-        log_error("[SDL] Failed create window\n");
+        LOG_ERROR("[SDL] Failed create window\n");
         return NULL;
     }
 
@@ -30,7 +27,7 @@ window_open(const char *title, i32 xpos, i32 ypos, i32 width, i32 height)
     //                                           | SDL_RENDERER_TARGETTEXTURE);
     // if (!result->renderer)
     // {
-    //     log_error("[SDL] Failed create renderer\n");
+    //     LOG_ERROR("[SDL] Failed create renderer\n");
     //     return NULL;
     // }
 
@@ -42,7 +39,7 @@ window_open(const char *title, i32 xpos, i32 ypos, i32 width, i32 height)
 }
 
 void
-window_close(CWindow *window)
+window_close(CCoreState *core, CWindow *window)
 {
     SDL_DestroyWindow(window->handle);
     MemoryFree(window);

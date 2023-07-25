@@ -3,7 +3,7 @@
 #include <SDL2/SDL.h>
 
 CLibrary
-library_load(const char *path)
+library_load(CCoreState *core, const char *path)
 {
     CLibrary result = { 0 };
 
@@ -20,7 +20,7 @@ library_load(const char *path)
     result.handle = SDL_LoadObject((const char *)path_ext.str);
     if (result.handle == NULL)
     {
-        log_error("[SDL] %s\n", SDL_GetError());
+        LOG_ERROR("[SDL] %s\n", SDL_GetError());
     }
 
     result.is_valid = true;
@@ -29,14 +29,14 @@ library_load(const char *path)
 }
 
 void
-library_unload(CLibrary *library)
+library_unload(CCoreState *core, CLibrary *library)
 {
     SDL_UnloadObject(library->handle);
     MemoryFree(library);
 }
 
 void *
-library_load_function(CLibrary *library, const char *name)
+library_load_function(CCoreState *core, CLibrary *library, const char *name)
 {
     return SDL_LoadFunction(library->handle, name);
 }

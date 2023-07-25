@@ -1,22 +1,20 @@
 #include "core/core.h"
 
-#include "core/debug/internal.h"
-
 void
-debug_startup(void)
+debug_startup(CCoreState *core)
 {
-    debug_profiler_startup();
+    debug_profiler_startup(core);
 }
 
 void
-debug_shutdown(void)
+debug_shutdown(CCoreState *core)
 {
-    debug_profiler_shutdown();
-    debug_memory_handle();
+    debug_profiler_shutdown(core);
+    debug_memory_handle(core);
 }
 
 void
-debug_update(void)
+debug_update(CCoreState *core)
 {
-    debug_profiler_handle();
+    debug_profiler_handle(core);
 }
