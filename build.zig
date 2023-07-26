@@ -1,4 +1,7 @@
 const std = @import("std");
+const stdout = std.io.getStdOut().writer();
+const print = @import("std").debug.print;
+
 const Step = std.build.Step;
 const CrossTarget = std.zig.CrossTarget;
 
@@ -19,12 +22,12 @@ const flags = [_][]const u8{
     "-gen-cdb-fragment-path",
     "cdb",
     "-std=c11",
-    "-E",
-    "-DEXPORT",
 };
 
 const iflags = [_][]const u8{
-    "-Icore/src",
+    "-I", "src",
+    "-I", "example/src",
+    "-I", "vendor/glad/include",
 };
 
 pub fn platform_settings(step: *Step.Compile, target: CrossTarget) void {
@@ -52,18 +55,50 @@ pub fn platform_settings(step: *Step.Compile, target: CrossTarget) void {
     }
 }
 
+pub fn build_add_run(b: *std.Build, exe: *Step.Compile, comptime name: []const u8) void {
+    const run_cmd = b.addRunArtifact(exe);
+    run_cmd.step.dependOn(b.getInstallStep());
+    if (b.args) |args| {
+        run_cmd.addArgs(args);
+    }
+
+    const run_step = b.step("run:" ++ name, "Run the " ++ name);
+    run_step.dependOn(&run_cmd.step);
+}
+
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
-    const lib_core = b.addStaticLibrary(.{
+    const core_flags = [_][]const u8{
+        "-DEXPORT",
+    };
+    const core = b.addStaticLibrary(.{
         .name = "core",
         .target = target,
         .optimize = optimize,
     });
-    lib_core.addCSourceFile("core/src/core/core.c", &flags ++ iflags);
-    lib_core.linkSystemLibrary("c");
-    lib_core.linkLibC();
-    platform_settings(lib_core, target);
-    b.installArtifact(lib_core);
+    core.addCSourceFile("src/os/os.c", &core_flags ++ flags ++ iflags);
+    core.linkSystemLibrary("c");
+    core.linkLibC();
+    platform_settings(core, target);
+    b.installArtifact(core);
+
+    const example_flags = [_][]const u8{};
+    const example_name = "example";
+    const example = b.addExecutable(.{
+        .name = example_name,
+        .target = target,
+        .optimize = optimize,
+    });
+    example.addCSourceFile("example/src/example.c", &example_flags ++ flags ++ iflags);
+    example.linkSystemLibrary("c");
+    example.linkSystemLibrary("core");
+    example.addLibraryPath("zig-out/lib");
+    example.linkLibC();
+    platform_settings(example, target);
+    // b.installArtifact(example);
+
+    // `zig build run -- arg1 arg2 etc`
+    // build_add_run(b, example, example_name);
 }
