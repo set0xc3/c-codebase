@@ -1,5 +1,6 @@
 #include "scene/scene.h"
 #include "core/uuid.h"
+#include "memory/arena.h"
 
 void
 scene_startup(CSceneState *state)
@@ -41,7 +42,6 @@ void
 scene_entity_destroy(CSceneState *state, CEntity *entity)
 {
     state->entities_count--;
-    MemoryFree(entity->uuid);
     MemoryCopyStruct(entity, state->entities + state->entities_count - 1,
                      CEntity);
     // MemoryZeroStruct(entity, CEntity);

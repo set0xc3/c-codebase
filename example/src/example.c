@@ -1,5 +1,4 @@
 #include <base/defines.h>
-#include <core/input.h>
 #include <core/logger.h>
 #include <os/os.h>
 
@@ -8,7 +7,7 @@
 int
 main(int argc, char *argv[])
 {
-    printf("Example\n");
+    LOG_INFO("Example\n");
 
     os_startup();
 
