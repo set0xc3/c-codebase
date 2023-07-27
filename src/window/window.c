@@ -19,7 +19,7 @@ window_open(CWindow *state, const char *title, i32 xpos, i32 ypos, i32 width,
     if (!state->handle)
     {
         LOG_ERROR("[SDL] Failed create window\n");
-        return NULL;
+        return false;
     }
 
     return true;

@@ -112,21 +112,22 @@ pub fn build(b: *std.Build) !void {
     platform_settings(core, target);
     b.installArtifact(core);
 
-    const example_flags = [_][]const u8{};
-    const example_name = "example";
-    const example = b.addExecutable(.{
-        .name = example_name,
+    const test_flags = [_][]const u8{};
+    const test_name = "test";
+    const test_exe = b.addExecutable(.{
+        .name = test_name,
         .target = target,
         .optimize = optimize,
     });
-    example.addCSourceFile("example/src/example.c", &example_flags ++ flags ++ iflags);
-    example.linkSystemLibrary("c");
-    example.linkSystemLibrary("core");
-    example.addLibraryPath("zig-out/lib");
-    example.linkLibC();
-    platform_settings(example, target);
-    // b.installArtifact(example);
+    test_exe.step.dependOn(&core.step);
+    test_exe.addCSourceFile("test/src/main.c", &test_flags ++ flags ++ iflags);
+    test_exe.linkSystemLibrary("c");
+    test_exe.linkSystemLibrary("core");
+    test_exe.addLibraryPath("zig-out/lib");
+    test_exe.linkLibC();
+    platform_settings(test_exe, target);
+    b.installArtifact(test_exe);
 
     // `zig build run -- arg1 arg2 etc`
-    // build_add_run(b, example, example_name);
+    build_add_run(b, test_exe, test_name);
 }
