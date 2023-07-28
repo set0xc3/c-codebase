@@ -1,26 +1,23 @@
 #pragma once
 
 #include "base/defines.h"
-#include "math/types.h"
+#include "math/matrix.h"
+#include "math/quaternion.h"
+#include "math/vector.h"
 
 API CTransform transform_create(CVector3 position, CQuaternion rotation,
                                 CVector3 scale);
 
 API CTransform transform_from_position(CVector3 position);
 API CTransform transform_from_rotation(CQuaternion rotation);
-API CTransform transform_from_position_rotation(CVector3    position,
-                                                CQuaternion rotation);
-API CTransform transform_from_position_rotation_scale(CVector3    position,
-                                                      CQuaternion rotation,
-                                                      CVector3    scale);
+API CTransform transform_from_scale(CVector3 scale);
 
 API void transform_translate(CTransform *transform, CVector3 translation);
 API void transform_rotate(CTransform *transform, CQuaternion rotation);
 API void transform_scale(CTransform *transform, CVector3 scale);
 
-// TODO
-// API CMatrix4 transform_local_get(CTransform *transform);
-// API CMatrix4 transform_world_get(CTransform *transform);
+API CMatrix4 transform_local_get(CTransform *transform);
+API CMatrix4 transform_world_get(CTransform *transform);
 
 API CVector3 transform_position_get(const CTransform *transform);
 API void     transform_position_set(CTransform *transform, CVector3 position);

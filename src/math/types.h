@@ -164,12 +164,10 @@ typedef struct CMatrix4
 
 typedef struct CTransform
 {
-    CVector3    position;
-    CQuaternion rotation;
-    CVector3    scale;
-    b8          is_dirty;
-
-    CMatrix4 local;
-
+    CVector3           position;
+    CQuaternion        rotation;
+    CVector3           scale;
+    CMatrix4           local;
     struct CTransform *parent;
+    b8                 is_dirty;
 } CTransform;
