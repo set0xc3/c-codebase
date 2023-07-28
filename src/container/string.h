@@ -1,7 +1,8 @@
 #pragma once
 
 #include "base/defines.h"
-#include "memory/arena.h"
+
+#define str8_c(s) (const char *)s.str
 
 typedef struct CString8
 {
@@ -9,11 +10,24 @@ typedef struct CString8
     u64 size;
 } CString8;
 
-API CString8 str8(const char *c);
-API b8       str8_eq(const CString8 left, const CString8 right);
-API CString8 str8_concat(CMemoryArena *arena, CString8 dest,
-                         CString8 src); // TODO
-API CString8 str8_replace(CMemoryArena *arena, CString8 dest,
-                          CString8 src); // TODO
+INLINE CString8
+str8(const char *c)
+{
+    CString8 result;
+    result.str  = (u8 *)c;
+    result.size = strlen(c);
+    return result;
+}
 
-#define str8_c(s) (const char *)s.str
+INLINE b8
+str8_eq(const CString8 left, const CString8 right)
+{
+    b8 result = !strcmp(str8_c(left), str8_c(right));
+    return result;
+}
+
+// TODO
+// API CString8 str8_concat(CMemoryArena *arena, CString8 dest,
+//                          CString8 src); // TODO
+// API CString8 str8_replace(CMemoryArena *arena, CString8 dest,
+//                           CString8 src); // TODO

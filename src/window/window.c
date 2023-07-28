@@ -1,6 +1,5 @@
 #include "window/window.h"
 #include "core/logger.h"
-#include "memory/arena.h"
 
 b8
 window_open(CWindow *state, const char *title, i32 xpos, i32 ypos, i32 width,
@@ -29,7 +28,6 @@ b8
 window_close(CWindow *state)
 {
     SDL_DestroyWindow(state->handle);
-    MemoryFree(state);
 
     return true;
 }

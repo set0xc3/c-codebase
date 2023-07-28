@@ -2,7 +2,7 @@
 
 #include "base/defines.h"
 
-#define PROFILER_FUNCTIONS_MAX 1000
+#define PROFILER_FUNCTIONS_MAX 1024
 
 typedef struct CDebugProfilerFunc
 {

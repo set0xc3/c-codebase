@@ -3,7 +3,7 @@
 #include "base/defines.h"
 #include "memory/arena.h"
 
-#define EVENT_LISTENERS_MAX 1000
+#define EVENT_LISTENERS_MAX 1024
 
 typedef enum CEventCode
 {

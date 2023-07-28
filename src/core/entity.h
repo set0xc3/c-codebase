@@ -1,8 +1,8 @@
 #pragma once
 
 #include "base/defines.h"
-#include "container/vector.h"
 #include "core/uuid.h"
+#include "math/vector.h"
 
 typedef CUUID CEntityID;
 

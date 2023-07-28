@@ -3,7 +3,7 @@
 #include "base/defines.h"
 #include "core/entity.h"
 
-#define SCENE_ENTITIES_MAX 1000
+#define SCENE_ENTITIES_MAX 1024
 
 typedef struct CSceneState
 {

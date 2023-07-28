@@ -32,7 +32,7 @@ scene_entity_create(CSceneState *state)
 {
     CEntity *result = state->entities + state->entities_count;
     result->uuid    = uuid_generate();
-    result->scale   = v3(1.0f, 1.0f, 1.0f);
+    result->scale   = vec3_init(1.0f, 1.0f, 1.0f);
     result->flags   = EntityFlag_Everything;
     state->entities_count++;
     return result;

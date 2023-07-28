@@ -1,21 +1,39 @@
 #include "math/math.h"
 
-#define M_PI 3.14159265358979323846 /* pi */
+#include <math.h>
 
 f32
-math_degreesf(f32 radian)
+math_sqrt(f32 x)
 {
-    return radian * (180.0f / M_PI);
+    return sqrtf(x);
 }
 
-f64
-math_radians(f64 degree)
+f32
+math_tan(f32 x)
 {
-    return degree * (M_PI / 180.0f);
+    return tanf(x);
 }
 
-f64
-math_degrees(f64 radian)
+f32
+math_cos(f32 x)
 {
-    return radian * (180.0f / M_PI);
+    return cosf(x);
+}
+
+f32
+math_sin(f32 x)
+{
+    return sinf(x);
+}
+
+f32
+math_acos(f32 x)
+{
+    return acosf(x);
+}
+
+f32
+math_abs(f32 x)
+{
+    return fabsf(x);
 }

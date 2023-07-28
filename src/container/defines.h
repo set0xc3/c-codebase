@@ -1,7 +1,7 @@
 #pragma once
 
 #include "base/defines.h"
-#include "container/vector.h"
+#include "math/vector.h"
 
 #define COLOR_RED         v4(1.0f, 0.0f, 0.0f, 1.0f)
 #define COLOR_RED_DARK    v4(0.5f, 0.0f, 0.0f, 1.0f)
