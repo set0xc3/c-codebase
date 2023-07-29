@@ -27,8 +27,7 @@ const flags = [_][]const u8{
 };
 
 const iflags = [_][]const u8{
-    "-I", "src",
-    "-I", "example/src",
+    "-I", "c-codebase/src",
     "-I", "vendor/glad/include",
 };
 
@@ -100,7 +99,7 @@ pub fn build(b: *std.Build) !void {
         "-DEXPORT",
     };
 
-    var core_files = try find_files(b, "src", &[_][]const u8{".c"});
+    var core_files = try find_files(b, "c-codebase/src", &[_][]const u8{".c"});
     const core = b.addStaticLibrary(.{
         .name = "core",
         .target = target,
@@ -111,6 +110,23 @@ pub fn build(b: *std.Build) !void {
     core.linkLibC();
     platform_settings(core, target);
     b.installArtifact(core);
+
+    const sandbox_flags = [_][]const u8{};
+    const sandbox_name = "sandbox";
+    const sandbox_exe = b.addExecutable(.{
+        .name = sandbox_name,
+        .target = target,
+        .optimize = optimize,
+    });
+    sandbox_exe.step.dependOn(&core.step);
+    sandbox_exe.addCSourceFile("sandbox/src/main.c", &sandbox_flags ++ flags ++ iflags);
+    sandbox_exe.linkSystemLibrary("c");
+    sandbox_exe.linkSystemLibrary("core");
+    sandbox_exe.addLibraryPath("zig-out/lib");
+    sandbox_exe.linkLibC();
+    platform_settings(sandbox_exe, target);
+    b.installArtifact(sandbox_exe);
+    build_add_run(b, sandbox_exe, sandbox_name);
 
     const test_flags = [_][]const u8{};
     const test_name = "test";
@@ -127,7 +143,6 @@ pub fn build(b: *std.Build) !void {
     test_exe.linkLibC();
     platform_settings(test_exe, target);
     b.installArtifact(test_exe);
-
     // `zig build run -- arg1 arg2 etc`
     build_add_run(b, test_exe, test_name);
 }

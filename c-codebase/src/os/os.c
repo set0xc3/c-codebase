@@ -12,6 +12,7 @@ os_startup(void)
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_EVENTS) < 0)
     {
         LOG_ERROR("SDL could not initialize: %s\n", SDL_GetError());
+        return false;
     }
 
     return true;
@@ -37,7 +38,7 @@ os_poll_event(void)
         {
         case SDL_QUIT:
             // event_fire(EventCode_AppQuit, send_event);
-            break;
+            return false;
 
         case SDL_WINDOWEVENT:
         {

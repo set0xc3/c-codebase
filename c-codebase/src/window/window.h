@@ -17,7 +17,6 @@ typedef struct CWindow
     } rect;
 } CWindow;
 
-API b8 window_open(CWindow *state, const char *title, i32 xpos, i32 ypos,
+API b8 window_open(CWindow *out_window, const char *title, i32 xpos, i32 ypos,
                    i32 width, i32 height);
-API b8 window_close(CWindow *state);
-API b8 window_poll_events(CWindow *state);
+API b8 window_close(CWindow *window);
