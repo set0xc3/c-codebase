@@ -1,6 +1,6 @@
-#include "window/window.h"
-#include "base/defines.h"
-#include "core/logger.h"
+#include "ccb/window/window.h"
+#include "ccb/base/defines.h"
+#include "ccb/core/logger.h"
 
 void
 test_window_open(CWindow *window)

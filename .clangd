@@ -1,7 +1,7 @@
 CompileFlags:
   Add: [
-  -I/home/duck/hole/dev/c-codebase/c-codebase/src,
-  -I/home/duck/hole/dev/c-codebase/sandbox/src,
-  -I/home/duck/hole/dev/c-codebase/test/src,
-  -I/home/duck/hole/dev/c-codebase/vendor/glad/include,
+  -I/home/duck/hole/dev/ccb/src,
+  -I/home/duck/hole/dev/ccb/sandbox/src,
+  -I/home/duck/hole/dev/ccb/test/src,
+  -I/home/duck/hole/dev/ccb/vendor/glad/include,
 ]

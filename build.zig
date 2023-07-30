@@ -27,7 +27,9 @@ const flags = [_][]const u8{
 };
 
 const iflags = [_][]const u8{
-    "-I", "c-codebase/src",
+    "-I", "ccb/src",
+    "-I", "sandbox/src",
+    "-I", "test/src",
     "-I", "vendor/glad/include",
 };
 
@@ -99,7 +101,7 @@ pub fn build(b: *std.Build) !void {
         "-DEXPORT",
     };
 
-    var core_files = try find_files(b, "c-codebase/src", &[_][]const u8{".c"});
+    var core_files = try find_files(b, "ccb/src/ccb", &[_][]const u8{".c"});
     const core = b.addStaticLibrary(.{
         .name = "core",
         .target = target,
@@ -119,7 +121,7 @@ pub fn build(b: *std.Build) !void {
         .optimize = optimize,
     });
     sandbox_exe.step.dependOn(&core.step);
-    sandbox_exe.addCSourceFile("sandbox/src/main.c", &sandbox_flags ++ flags ++ iflags);
+    sandbox_exe.addCSourceFile("sandbox/src/sandbox/main.c", &sandbox_flags ++ flags ++ iflags);
     sandbox_exe.linkSystemLibrary("c");
     sandbox_exe.linkSystemLibrary("core");
     sandbox_exe.addLibraryPath("zig-out/lib");
@@ -136,7 +138,7 @@ pub fn build(b: *std.Build) !void {
         .optimize = optimize,
     });
     test_exe.step.dependOn(&core.step);
-    test_exe.addCSourceFile("test/src/main.c", &test_flags ++ flags ++ iflags);
+    test_exe.addCSourceFile("test/src/test/main.c", &test_flags ++ flags ++ iflags);
     test_exe.linkSystemLibrary("c");
     test_exe.linkSystemLibrary("core");
     test_exe.addLibraryPath("zig-out/lib");
