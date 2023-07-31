@@ -30,7 +30,6 @@ API b8      str_eq(const CString left, const CString right);
 API CString str_concast(CMemoryArena *arena, const CString *a,
                         const CString *b);
 API CString str_prefix(const CString *str, const u64 size);
-API b8      str_find(const CString *find);
 API CString str_find_first(const CString *str, const char find,
                            const u64 offset);
 API CString str_find_last(const CString *str, const char find,

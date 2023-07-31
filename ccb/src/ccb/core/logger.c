@@ -33,8 +33,8 @@ log_print(u32 type, const char *time, const char *file_path, u32 line,
 
     const u32 padding = prefix_width - (u32)strlen(prefix);
     fprintf(stream, "[%s] [%s]", time, prefix);
-    fprintf(stream, "%*s %s", padding, "", buffer);
-    // fprintf(stream, "%*s [%s:%d] %s", padding, "", file_path, line, buffer);
+    fprintf(stream, "%*s [%s:%d] %s", padding, "", strrchr(file_path, '/') + 1,
+            line, buffer);
 
     va_end(args);
 }
