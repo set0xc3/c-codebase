@@ -41,8 +41,9 @@ typedef i64 b64;
 
 #define ArrayCount(a) (sizeof((a)) / sizeof(*(a)))
 
-#define CLAMP(value, min, max)                                                \
+#define Clamp(value, min, max)                                                \
     ((value <= min) ? min : (value >= max) ? max : value)
+#define ClampTop(value, max) ((value >= max) ? max : value)
 
 // Platform Types
 

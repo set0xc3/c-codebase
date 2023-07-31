@@ -1,115 +1,86 @@
 #include "ccb/container/string.h"
 
 CString
-str_replace(CMemoryArena *arena, const CString replace, const CString a,
-            const CString b)
+str_lit(const char *c)
 {
-    LOG_DEBUG("replace.size: %d\n", replace.size);
-    LOG_DEBUG("a.size: %d\n", a.size);
-    LOG_DEBUG("b.size: %d\n", b.size);
-
-    CString fixed = { 0 };
-
-    if (a.size > b.size)
-    {
-        str_copy(arena, &fixed, &replace);
-    }
-    else
-    {
-        CString src = replace;
-        src.size    = replace.size + b.size - a.size;
-        str_copy(arena, &fixed, &src);
-    }
-
-    LOG_DEBUG("fixed.size: %d\n", fixed.size);
-
-    {
-        u32 find_count = 0;
-        for (u32 i = 0; i < fixed.size; i++)
-        {
-            for (u32 j = 0; j < a.size; j++)
-            {
-                if (fixed.data[i + j] == a.data[j])
-                {
-                    find_count++;
-                    if (find_count == a.size)
-                    {
-                        // memmove(&fixed.str[i + j],
-                        //         &fixed.str[i + b.size - a.size],
-                        //         i + b.size - a.size);
-                        // memcpy(&fixed.str[i], b.str, b.size);
-                        LOG_DEBUG("Finded: %s\n", &fixed.data[i + j]);
-                        break;
-                    }
-                }
-                else
-                {
-                    find_count = 0;
-                }
-            }
-        }
-    }
-
-    LOG_DEBUG("%s\n", fixed.data);
-    return fixed;
+    CString result;
+    result.data = (char *)c;
+    result.size = strlen(c);
+    return result;
 }
 
 CString
-str_path_fix(CMemoryArena *arena, const CString path)
+str_alloc(CMemoryArena *arena, const u64 size)
 {
-    LOG_DEBUG("path: %s\n", path.data);
+    CString result_str;
+    result_str.data = PushArrayZero(arena, char, size);
+    result_str.size = size;
+    return result_str;
+}
 
-    if (path.size <= 3)
+b8
+str_eq(const CString left, const CString right)
+{
+    b8 result = !strcmp(left.data, right.data);
+    return result;
+}
+
+CString
+str_concast(CMemoryArena *arena, const CString *a, const CString *b)
+{
+    CString result = str_alloc(arena, a->size + b->size);
+    MemoryCopyArray(result.data, a->data, char, a->size);
+    MemoryCopyArray(result.data + a->size, b->data, char, b->size);
+    result.data[result.size] = '\0';
+    return result;
+}
+
+CString
+str_prefix(const CString *str, const u64 size)
+{
+    CString result;
+    result.data = str->data;
+    result.size = ClampTop(size, str->size);
+    return result;
+}
+
+CString
+str_find_first(const CString *str, const char find, const u64 offset)
+{
+    CString result;
+    result.data = strchr(str->data, find);
+    result.size = strlen(result.data);
+    return result;
+}
+
+CString
+str_find_last(const CString *str, const char find, const u64 offset)
+{
+    CString result = *str;
+    u64     pos    = str->size;
+    for (u64 i = 0; i < offset + 1; i++)
     {
-        return path;
-    }
-
-    CString fixed;
-    str_copy(arena, &fixed, &path);
-
-    // fix - \\
-    // fix - /./
-    // fix - ../
-    for (u32 i = 0; i < fixed.size; i++)
-    {
-        if (fixed.data[i] == '\\')
+        for (u64 j = 0; j < pos; j++)
         {
-            fixed.data[i] = '/';
-        }
-    }
-
-    u32 pos        = 0;
-    u32 fixed_size = 0;
-    for (u32 i = 0; i < fixed.size; i++)
-    {
-        if (fixed.data[i] == '.' && fixed.data[i + 1] == '.'
-            && fixed.data[i + 2] == '/')
-        {
-            u32 last_count = 0;
-            for (u32 j = 0; j < pos; j++)
+            if (str->data[Clamp(pos - j - i, 0, str->size)] == find)
             {
-                if (fixed.data[i - j] == '/')
-                {
-                    last_count++;
-                    if (last_count == 2)
-                    {
-                        last_count = 0;
-                        LOG_DEBUG("%s\n", &fixed.data[i - j]);
-                        memcpy(&fixed.data[i - j], &fixed.data[i + 2],
-                               strlen(&fixed.data[i + 2]));
-                        fixed_size = i + 2;
-                        break;
-                    }
-                }
+                pos         = Clamp(pos - j - i, 0, str->size);
+                result.data = str->data + pos + 1;
+                result.size = str->size - pos - 1;
+                break;
             }
-
-            // LOG_DEBUG("%s\n", &fixed.data[i]);
-            // LOG_DEBUG("%s\n", &fixed.data[i + 3]);
+            else if (!Clamp(pos - j - i, 0, str->size) && str->data[j] == find)
+            {
+                result.data = str->data + 1;
+                result.size = str->size - 1;
+                break;
+            }
+            else if (!Clamp(pos - j - i, 0, str->size))
+            {
+                result = *str;
+                break;
+            }
         }
-        pos++;
     }
-    // fixed.data[fixed_size] = '\0';
-
-    LOG_DEBUG("fixed: %s\n", fixed.data);
-    return fixed;
+    return result;
 }

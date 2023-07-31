@@ -10,43 +10,34 @@ typedef struct CString
     u64   size;
 } CString;
 
-INLINE CString
-str_lit(const char *c)
+typedef struct CStringNode
 {
-    CString result;
-    result.data = (char *)c;
-    result.size = strlen(c);
-    return result;
-}
+    struct CStringNode *next;
+    CString             string;
+} CStringNode;
 
-INLINE b8
-str_eq(const CString left, const CString right)
+typedef struct CStringList
 {
-    b8 result = !strcmp(left.data, right.data);
-    return result;
-}
+    CStringNode *first;
+    CStringNode *last;
+    u64          node_count;
+    u64          size;
+} CStringList;
 
-INLINE void
-str_copy(CMemoryArena *arena, CString *dest, const CString *src)
-{
-    dest->data = PushArrayZero(arena, char, src->size);
-    dest->size = src->size;
-    MemoryCopyArray(dest->data, src->data, char, src->size);
-}
+API CString str_lit(const char *c);
+API CString str_alloc(CMemoryArena *arena, const u64 size);
+API b8      str_eq(const CString left, const CString right);
+API CString str_concast(CMemoryArena *arena, const CString *a,
+                        const CString *b);
+API CString str_prefix(const CString *str, const u64 size);
+API b8      str_find(const CString *find);
+API CString str_find_first(const CString *str, const char find,
+                           const u64 offset);
+API CString str_find_last(const CString *str, const char find,
+                          const u64 offset);
 
-API CString str_replace(CMemoryArena *arena, const CString replace,
-                        const CString a, const CString b);
-
-API CString str_path_fix(CMemoryArena *arena, const CString path);
-API CString str_path_root(const CString path);
-API CString str_path_root_name(const CString path);
-API CString str_path_directory(const CString path);
-API CString str_path_parent(const CString path);
-API CString str_path_relative(const CString path);
-
-API CString str_file_name(const CString file_path);
-API CString str_file_name_remove(const CString file_path);
-API CString str_file_name_replace(const CString file_path);
-API CString str_file_extension(const CString file_path);
-API CString str_file_extension_remove(const CString file_path);
-API CString str_file_extension_replace(const CString file_path);
+// TODO: Formating
+API CString str_pushfv(CMemoryArena *arena, char *fmt, va_list args);
+API CString str_pushf(CMemoryArena *arena, char *fmt, ...);
+API void    str_list_pushf(CMemoryArena *arena, CStringList *list, char *fmt,
+                           ...);

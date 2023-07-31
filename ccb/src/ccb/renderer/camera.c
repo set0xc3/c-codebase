@@ -249,7 +249,7 @@ camera_pitch(CCamera *camera, f32 amount)
         static const f32 limit
             = 1.55334306f; // 89 degrees, or equivalent to deg_to_rad(89.0f);
         camera->euler_rotation.x
-            = CLAMP(camera->euler_rotation.x, -limit, limit);
+            = Clamp(camera->euler_rotation.x, -limit, limit);
 
         camera->is_dirty = true;
     }

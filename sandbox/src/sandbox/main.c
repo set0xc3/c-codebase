@@ -16,15 +16,22 @@ main(int argc, char *argv[])
 {
     printf("\n");
 
-    CMemoryArena    *arena   = arena_create(Gigabytes(1));
-    CMemoryArenaTemp scratch = arena_temp_scratch_get(arena);
+    CMemoryArena *arena = arena_create(Gigabytes(1));
 
-    CString file_path = str_lit("game/src/../build/");
-    CString fixed     = { 0 };
+    CString path
+        = str_lit("/home/duck/hole/dev/c-codebase/sandbox/src/sandbox/main.c");
+    // = str_lit("main.c");
 
-    fixed = str_path_fix(scratch.arena, file_path);
-
-    // LOG_DEBUG("file_path: %s\n", fixed);
+    path = str_find_last(&path, '/', -1);
+    LOG_DEBUG("path: %s:%d\n", path.data, path.size);
+    path = str_find_last(&path, '/', 3);
+    LOG_DEBUG("path: %s:%d\n", path.data, path.size);
+    path = str_find_last(&path, '/', 2);
+    LOG_DEBUG("path: %s:%d\n", path.data, path.size);
+    path = str_find_last(&path, '/', 1);
+    LOG_DEBUG("path: %s:%d\n", path.data, path.size);
+    path = str_find_last(&path, '/', 0);
+    LOG_DEBUG("path: %s:%d\n", path.data, path.size);
 
     if (os_startup())
     {
