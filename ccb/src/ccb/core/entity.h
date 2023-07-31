@@ -1,8 +1,9 @@
 #pragma once
 
 #include "ccb/base/defines.h"
+#include "ccb/container/string.h"
 #include "ccb/core/uuid.h"
-#include "ccb/math/vector.h"
+#include "ccb/math/transform.h"
 
 typedef CUUID CEntityID;
 
@@ -17,9 +18,8 @@ typedef struct CEntity
 {
     CEntityID    uuid;
     CEntityFlags flags;
+    CString      name;
     b8           enabled;
 
-    CVector3 position;
-    CVector4 quaternion;
-    CVector3 scale;
+    CTransform transform;
 } CEntity;

@@ -9,12 +9,16 @@ const char *logger_types_string[LoggerType_Count] = {
 };
 
 void
-log_message(CLoggerType type, const char *format, va_list args)
+log_print(u32 type, const char *time, const char *file_path, u32 line,
+          const char *format, ...)
 {
+    va_list args;
+    va_start(args, format);
+
     char       *buffer       = NULL;
     FILE       *stream       = NULL;
     const char *prefix       = "";
-    const u32   prefix_width = 8;
+    const u32   prefix_width = 7;
 
     stream = stdout;
     prefix = logger_types_string[type];
@@ -28,15 +32,9 @@ log_message(CLoggerType type, const char *format, va_list args)
     vsnprintf(buffer, buffer_size + 1, format, args);
 
     const u32 padding = prefix_width - (u32)strlen(prefix);
-    fprintf(stream, " - %s:", prefix);
+    fprintf(stream, "[%s] [%s]", time, prefix);
     fprintf(stream, "%*s %s", padding, "", buffer);
-}
+    // fprintf(stream, "%*s [%s:%d] %s", padding, "", file_path, line, buffer);
 
-void
-log_print(CLoggerType type, const char *format, ...)
-{
-    va_list args;
-    va_start(args, format);
-    log_message(type, format, args);
     va_end(args);
 }

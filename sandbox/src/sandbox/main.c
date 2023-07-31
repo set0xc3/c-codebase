@@ -14,6 +14,18 @@ global_variable CCamera *camera      = NULL;
 int
 main(int argc, char *argv[])
 {
+    printf("\n");
+
+    CMemoryArena    *arena   = arena_create(Gigabytes(1));
+    CMemoryArenaTemp scratch = arena_temp_scratch_get(arena);
+
+    CString file_path = str_lit("game/src/../build/");
+    CString fixed     = { 0 };
+
+    fixed = str_path_fix(scratch.arena, file_path);
+
+    // LOG_DEBUG("file_path: %s\n", fixed);
+
     if (os_startup())
     {
         window_open(root_window, "RootWindow", 0, 0, 800, 600);
@@ -31,6 +43,8 @@ main(int argc, char *argv[])
     }
 
     os_shutdown();
+
+    printf("\n");
 
     return 0;
 }
