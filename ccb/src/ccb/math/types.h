@@ -137,25 +137,10 @@ typedef union CVector4
     f32 elements[4];
 } CVector4;
 
-typedef CVector4 CRect;
 typedef CVector2 CPoint;
+typedef CVector4 CRect;
 typedef CVector4 CQuaternion;
-
-typedef struct CVertex2d
-{
-    CVector2 position;
-    CVector4 color;
-    CVector2 uv;
-} CVertex2d;
-
-typedef struct CVertex3d
-{
-    CVector3 position;
-    CVector4 color;
-    CVector3 normal;
-    CVector2 uv;
-    CVector3 tangent;
-} CVertex3d;
+typedef CVector4 CColor;
 
 typedef struct CMatrix4
 {

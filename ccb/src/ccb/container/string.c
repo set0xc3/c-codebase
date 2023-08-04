@@ -44,6 +44,23 @@ str_prefix(const CString *str, const u64 size)
     return result;
 }
 
+u32
+str_find_all(const CString *str, const char find)
+{
+    u32 result = 0;
+    u64 pos    = str->size;
+
+    for (u64 i = 0; i < pos; i++)
+    {
+        if (str->data[i] == find)
+        {
+            result++;
+        }
+    }
+
+    return result;
+}
+
 CString
 str_find_first(const CString *str, const char find, const u64 offset)
 {

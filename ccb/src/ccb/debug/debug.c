@@ -1,5 +1,5 @@
 #include "ccb/debug/debug.h"
-#include "ccb/os/os.h"
+#include "ccb/platform/platform.h"
 
 global_variable CDebugState state;
 
@@ -39,12 +39,12 @@ debug_profiler_handle(void)
         CDebugProfilerFunc *function = &state.functions[i];
         if (function->hit_count)
         {
-            f64 dt
-                = (f64)((f64)function->cycle_count / (f64)os_perf_frequency());
+            f64 dt = (f64)((f64)function->cycle_count
+                           / (f64)platform_perf_frequency());
 
             f64 dt_cyh
                 = (f64)(((f64)function->cycle_count / function->hit_count)
-                        / (f64)os_perf_frequency());
+                        / (f64)platform_perf_frequency());
 
 #if 0
             LOG_INFO("%s: %lu/cy : %lu/h : %lu/cy/h : %.3f/ms : %.3f/cy/ms\n",

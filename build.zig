@@ -22,7 +22,7 @@ const flags = [_][]const u8{
     "-g",
 
     "-gen-cdb-fragment-path",
-    "cdb",
+    ".cache/cdb",
     "-std=c11",
 };
 
@@ -107,6 +107,7 @@ pub fn build(b: *std.Build) !void {
         .target = target,
         .optimize = optimize,
     });
+    core.addCSourceFile("vendor/glad/src/glad.c", &core_flags ++ flags ++ iflags);
     core.addCSourceFiles(core_files, &core_flags ++ flags ++ iflags);
     core.linkSystemLibrary("c");
     core.linkLibC();
@@ -129,22 +130,4 @@ pub fn build(b: *std.Build) !void {
     platform_settings(sandbox_exe, target);
     b.installArtifact(sandbox_exe);
     build_add_run(b, sandbox_exe, sandbox_name);
-
-    const test_flags = [_][]const u8{};
-    const test_name = "test";
-    const test_exe = b.addExecutable(.{
-        .name = test_name,
-        .target = target,
-        .optimize = optimize,
-    });
-    test_exe.step.dependOn(&core.step);
-    test_exe.addCSourceFile("test/src/test/main.c", &test_flags ++ flags ++ iflags);
-    test_exe.linkSystemLibrary("c");
-    test_exe.linkSystemLibrary("core");
-    test_exe.addLibraryPath("zig-out/lib");
-    test_exe.linkLibC();
-    platform_settings(test_exe, target);
-    b.installArtifact(test_exe);
-    // `zig build run -- arg1 arg2 etc`
-    build_add_run(b, test_exe, test_name);
 }

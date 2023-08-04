@@ -7,7 +7,7 @@
 typedef struct CWindow
 {
     SDL_Window   *handle;
-    SDL_Renderer *renderer;
+    SDL_GLContext context;
     SDL_Texture  *texture;
     const char   *title;
     struct
@@ -17,6 +17,7 @@ typedef struct CWindow
     } rect;
 } CWindow;
 
-API b8 window_open(CWindow *out_window, const char *title, i32 xpos, i32 ypos,
-                   i32 width, i32 height);
-API b8 window_close(CWindow *window);
+API CWindow *window_open(const char *title, i32 xpos, i32 ypos, i32 width,
+                         i32 height);
+API b8       window_close(CWindow *window);
+API void     window_swap_buffer(CWindow *window);

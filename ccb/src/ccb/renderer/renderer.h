@@ -2,21 +2,21 @@
 
 #include "ccb/base/defines.h"
 #include "ccb/math/types.h"
-
-#define RENDERER_TRIANGLES_MAX 4096
-#define RENDERER_VERTICES_MAX  RENDERER_TRIANGLES_MAX * 3
+#include "ccb/renderer/opengl.h"
+#include "ccb/renderer/types.h"
 
 typedef struct CRendererState
 {
-    u32 vao;
-    u32 vbo;
-    u32 shader;
+    COpenGLState gl;
+    CRenderBatch render_batch;
 
     CMatrix4 projection;
-
-    CVertex3d traiangles[RENDERER_VERTICES_MAX];
-    u64       traiangle_count;
 } CRendererState;
 
-API void renderer_startup(CRendererState *state);
-API void renderer_shutdown(CRendererState *state);
+API CRendererState *renderer_startup(void);
+API void            renderer_shutdown(CRendererState *state);
+
+API void renderer_begin_frame(CRendererState *r);
+API void renderer_end_frame(CRendererState *r);
+API void renderer_draw_rect(CRendererState *state, CVector2 position,
+                            CVector2 size, CColor color);

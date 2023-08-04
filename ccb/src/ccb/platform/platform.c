@@ -1,4 +1,4 @@
-#include "ccb/os/os.h"
+#include "ccb/platform/platform.h"
 #include "ccb/container/string.h"
 #include "ccb/core/event.h"
 #include "ccb/core/input.h"
@@ -7,19 +7,25 @@
 #include <SDL2/SDL.h>
 
 b8
-os_startup(void)
+platform_startup(void)
 {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_EVENTS) < 0)
     {
-        LOG_ERROR("SDL could not initialize: %s\n", SDL_GetError());
-        return false;
+        LOG_ERROR("[SDL] Failed init sdl: %s\n", SDL_GetError());
+        exit(1);
     }
+
+    // Use OpenGL 4.6
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,
+                        SDL_GL_CONTEXT_PROFILE_CORE);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
 
     return true;
 }
 
 b8
-os_shutdown(void)
+platform_shutdown(void)
 {
     SDL_Quit();
 
@@ -27,7 +33,7 @@ os_shutdown(void)
 }
 
 b8
-os_poll_event(void)
+platform_poll_event(void)
 {
     CEvent    send_event = { 0 };
     SDL_Event raw_event  = { 0 };
@@ -130,25 +136,25 @@ os_poll_event(void)
 }
 
 void
-os_sleep(u32 ms)
+platform_delay(u32 ms)
 {
     SDL_Delay(ms);
 }
 
 u64
-os_perf_counter(void)
+platform_perf_counter(void)
 {
     return SDL_GetPerformanceCounter();
 }
 
 u64
-os_perf_frequency(void)
+platform_perf_frequency(void)
 {
     return SDL_GetPerformanceFrequency();
 }
 
 CLibrary
-os_library_load(const char *path)
+platform_library_load(const char *path)
 {
     CLibrary result = { 0 };
 
@@ -174,14 +180,14 @@ os_library_load(const char *path)
 }
 
 void
-os_library_unload(CLibrary *library)
+platform_library_unload(CLibrary *library)
 {
     SDL_UnloadObject(library->handle);
     MemoryFree(library);
 }
 
 void *
-os_library_load_function(CLibrary *library, const char *name)
+platform_library_load_function(CLibrary *library, const char *name)
 {
     return SDL_LoadFunction(library->handle, name);
 }
